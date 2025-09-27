@@ -7,6 +7,11 @@
 <p>
 AI-powered consulting portfolio builder for professionals, clients, and organizations.<br>
 This app is built and maintained by <strong>PyStatR+</strong> to help transform expertise into polished, client-ready portfolios with branding, strategy, and export features.
+
+## 📄 Release Notes
+
+See detailed updates in the [Release Notes](docs/release_notes.md).
+
 </p>
 
 <p align="center">
