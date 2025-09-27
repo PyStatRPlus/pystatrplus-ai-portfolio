@@ -55,7 +55,7 @@ def check_credentials(username: str, password: str):
         "alierwai": {
             "password": simple_hash(st.secrets["users"]["alierwai_password"]),
             "role": "admin",
-            "name": "Alier Kergany"
+            "name": "Alier Reng"
         },
         "client1": {
             "password": simple_hash(st.secrets["users"]["client1_password"]),
@@ -207,7 +207,7 @@ def apply_custom_css():
         font-weight: 600 !important;
     }
     .stFileUploader div[data-testid="stFileUploaderDropzone"] {
-        background: rgba(255, 255, 255, 0.05) !important;
+        background: rgba(17, 24, 39, 0.05) !important;
         border: 2px dashed rgba(56, 189, 248, 0.6) !important;
         border-radius: 10px !important;
         transition: all 0.3s ease;
@@ -216,6 +216,7 @@ def apply_custom_css():
         border-color: #FFD700 !important;
         box-shadow: 0 0 15px rgba(255, 215, 0, 0.7) !important;
     }
+    
 
     /* Unified Buttons */
     .stButton button, .stDownloadButton button {
@@ -382,40 +383,40 @@ def apply_custom_css():
     header {visibility: hidden;}
 
     /* Tabs: text colors */
-    .stTabs [role="tab"]{
-      color:#FFD700 !important;         /* default = gold */
-      font-weight:600;
-      box-shadow:none !important;       /* nuke any built-in underline via shadow */
-      border-bottom:none !important;
-    }
-    .stTabs [role="tab"]:hover{
-      color:#38BDF8 !important;         /* hover = cyan */
-      text-shadow:0 0 6px rgba(56,189,248,.7);
-    }
-    .stTabs [role="tab"][aria-selected="true"]{
-      color:#38BDF8 !important;         /* active = cyan text */
-    }
+.stTabs [role="tab"]{
+  color:#FFD700 !important;         /* default = gold */
+  font-weight:600;
+  box-shadow:none !important;       /* nuke any built-in underline via shadow */
+  border-bottom:none !important;
+}
+.stTabs [role="tab"]:hover{
+  color:#38BDF8 !important;         /* hover = cyan */
+  text-shadow:0 0 6px rgba(56,189,248,.7);
+}
+.stTabs [role="tab"][aria-selected="true"]{
+  color:#38BDF8 !important;         /* active = cyan text */
+}
 
-    /* Streamlit/BaseWeb moving highlight bar (the underline) */
-    .stTabs [data-baseweb="tab-highlight"]{
-      background-color:#FFD700 !important;   /* gold bar */
-      height:3px !important;
-      border-radius:3px !important;
-    }
+/* Streamlit/BaseWeb moving highlight bar (the underline) */
+.stTabs [data-baseweb="tab-highlight"]{
+  background-color:#FFD700 !important;   /* gold bar */
+  height:3px !important;
+  border-radius:3px !important;
+}
 
-    /* Fallbacks for newer/older builds that don’t expose data-baseweb */
-    .stTabs [class*="tab-highlight"], 
-    .stTabs [class*="TabsHighlight"],
-    .stTabs div[role="tablist"] > div:last-child{
-      background-color:#FFD700 !important;
-      height:3px !important;
-      border-radius:3px !important;
-    }
+/* Fallbacks for newer/older builds that don’t expose data-baseweb */
+.stTabs [class*="tab-highlight"], 
+.stTabs [class*="TabsHighlight"],
+.stTabs div[role="tablist"] > div:last-child{
+  background-color:#FFD700 !important;
+  height:3px !important;
+  border-radius:3px !important;
+}
 
-    /* Remove any bottom border on the tab strip itself */
-    .stTabs [role="tablist"]{
-      border-bottom:none !important;
-    }
+/* Remove any bottom border on the tab strip itself */
+.stTabs [role="tablist"]{
+  border-bottom:none !important;
+}
 
 
     /* Hyperlinks inside app */
@@ -796,57 +797,7 @@ def apply_custom_css():
         box-shadow: 0 0 10px rgba(255,215,0,0.9) !important;
     }
 
-    /* ========================= */
-    /* ⬇️ Selectboxes - PyStatR+ Glow */
-    /* ========================= */
-    [data-testid="stSidebar"] .stSelectbox > div {
-        background: rgba(15, 23, 42, 0.5) !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-        border-radius: 12px !important;
-        padding: 0.6rem !important;
-        color: #e5e7eb !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-    [data-testid="stSidebar"] .stSelectbox > div:hover {
-        border-color: #38BDF8 !important;
-        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
-        color: #fff !important;
-    }
-
-    /* Dropdown menu itself */
-    [data-testid="stSidebar"] .stSelectbox [role="listbox"] {
-        background: #0f172a !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-        border-radius: 10px !important;
-    }
-
-    [data-testid="stSidebar"] .stSelectbox [role="option"][aria-selected="true"] {
-        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
-        color: #fff !important;
-        font-weight: 600 !important;
-    }
-
-    /* ========================= */
-    /* 📝 Text Inputs - PyStatR+ Glow */
-    /* ========================= */
-    [data-testid="stSidebar"] .stTextInput input {
-        background: rgba(255,255,255,0.08) !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-        border-radius: 10px !important;
-        padding: 0.6rem 1rem !important;
-        color: #e5e7eb !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-    [data-testid="stSidebar"] .stTextInput input:focus {
-        border-color: #FFD700 !important;
-        box-shadow: 0 0 14px rgba(255,215,0,0.8) !important;
-        outline: none !important;
-        color: #fff !important;
-    }
-
-
+    
     /* Radio options */
     [data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {
         background: rgba(15, 23, 42, 0.4) !important; /* dark glass */
@@ -885,111 +836,6 @@ def apply_custom_css():
         box-shadow: 0 0 18px rgba(255,215,0,0.9) !important;
         transform: translateY(-2px) scale(1.03);
     }
-
-    /* ================================== */
-    /* 🌟 Sidebar Glow Theme — PyStatR+   */
-    /* ================================== */
-    [data-testid="stSidebar"] {
-        background: rgba(15, 23, 42, 0.85) !important;
-        backdrop-filter: blur(14px) !important;
-        border-right: 1px solid rgba(255,255,255,0.1) !important;
-        box-shadow: 0 0 20px rgba(56,189,248,0.25) !important;
-    }
-
-    /* === Sidebar Headers === */
-    [data-testid="stSidebar"] h2, 
-    [data-testid="stSidebar"] h3 {
-        color: #FFD700 !important; /* Gold headings */
-        text-shadow: 0 0 8px rgba(255,215,0,0.6) !important;
-    }
-
-    /* === Radios === */
-    [data-testid="stSidebar"] .stRadio [role="radio"] {
-        background: rgba(255,255,255,0.08) !important;
-        border: 1px solid rgba(255,255,255,0.2) !important;
-        border-radius: 10px !important;
-        padding: 0.5rem 1rem !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-    [data-testid="stSidebar"] .stRadio [role="radio"]:hover {
-        border-color: #38BDF8 !important;
-        box-shadow: 0 0 10px rgba(56,189,248,0.7) !important;
-    }
-    [data-testid="stSidebar"] .stRadio [aria-checked="true"] {
-        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
-        color: #fff !important;
-        font-weight: 600 !important;
-    }
-
-    /* === Checkboxes === */
-    [data-testid="stSidebar"] .stCheckbox {
-        padding: 0.4rem 0.2rem !important;
-        border-radius: 8px !important;
-        transition: background 0.3s ease-in-out !important;
-    }
-    [data-testid="stSidebar"] .stCheckbox:hover {
-        background: rgba(56,189,248,0.15) !important;
-    }
-    [data-testid="stSidebar"] .stCheckbox input:checked ~ div {
-        color: #FFD700 !important;
-        font-weight: 600 !important;
-    }
-
-    /* === Sliders === */
-    [data-testid="stSidebar"] .stSlider [role="slider"] {
-        background: #FFD700 !important; /* Gold knob */
-        border: 2px solid #38BDF8 !important;
-        box-shadow: 0 0 12px rgba(56,189,248,0.6) !important;
-    }
-    [data-testid="stSidebar"] .stSlider [role="slider"]:hover {
-        box-shadow: 0 0 18px rgba(255,215,0,0.8) !important;
-    }
-    [data-testid="stSidebar"] .stSlider [role="slider"]::-webkit-slider-runnable-track {
-        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
-        border-radius: 6px !important;
-    }
-
-    /* === Selectboxes === */
-    [data-testid="stSidebar"] .stSelectbox > div {
-        background: rgba(15, 23, 42, 0.5) !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-        border-radius: 12px !important;
-        padding: 0.6rem !important;
-        color: #e5e7eb !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-    [data-testid="stSidebar"] .stSelectbox > div:hover {
-        border-color: #38BDF8 !important;
-        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
-        color: #fff !important;
-    }
-    [data-testid="stSidebar"] .stSelectbox [role="listbox"] {
-        background: #0f172a !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-        border-radius: 10px !important;
-    }
-    [data-testid="stSidebar"] .stSelectbox [role="option"][aria-selected="true"] {
-        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
-        color: #fff !important;
-        font-weight: 600 !important;
-    }
-
-    /* === Text Inputs === */
-    [data-testid="stSidebar"] .stTextInput input {
-        background: rgba(255,255,255,0.08) !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-        border-radius: 10px !important;
-        padding: 0.6rem 1rem !important;
-        color: #e5e7eb !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-    [data-testid="stSidebar"] .stTextInput input:focus {
-        border-color: #FFD700 !important;
-        box-shadow: 0 0 14px rgba(255,215,0,0.8) !important;
-        outline: none !important;
-        color: #fff !important;
-    }
-
 
     </style>
     """, unsafe_allow_html=True)
