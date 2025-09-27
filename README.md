@@ -58,26 +58,6 @@ powered by <strong>PyStatR+</strong> branding, AI-driven content generation, and
 
 <hr>
 
-<h2>📸 Preview</h2>
-<p><em>(Screenshots below)</em></p>
-
-<ul>
-  <li><strong>🔑 Login</strong><br>
-    <img src="docs/screenshots/login.png" alt="Login Screen" width="500">
-  </li>
-  <li><strong>🛠️ Admin Dashboard</strong><br>
-    <img src="docs/screenshots/admin_dashboard.png" alt="Admin Dashboard" width="700">
-  </li>
-  <li><strong>👤 Client Dashboard</strong><br>
-    <img src="docs/screenshots/client_dashboard.png" alt="Client Dashboard" width="700">
-  </li>
-  <li><strong>📄 Exported Portfolio PDF</strong><br>
-    <img src="docs/screenshots/pdf_sample.png" alt="PDF Export Sample" width="500">
-  </li>
-</ul>
-
-<hr>
-
 <h2>🛠️ Installation & Deployment</h2>
 
 <h3>Local Setup</h3>
@@ -215,3 +195,5 @@ If you’d like to suggest improvements, feel free to open an issue or submit a 
 <strong>PyStatR+</strong> is an educational data-science initiative founded in 2024 to bridge the gap between academic statistics and real-world data science.<br>
 Focused on healthcare analytics, mentorship, and practical applications of Python, R, and statistics, PyStatR+ empowers professionals to build impactful careers and deliver data-driven results.
 </p>
+
+<h2>📄 Release Notes</h2> <div class="card"> <p>See detailed updates in the <a href="docs/release_notes.md">Release Notes</a>.</p> </div>
