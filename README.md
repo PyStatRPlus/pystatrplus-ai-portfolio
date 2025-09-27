@@ -89,7 +89,7 @@ powered by **PyStatR+ branding, AI-driven content generation, and PDF exports**.
 - `runtime.txt` → `python-3.13`
 - `branding_presets.json` *(optional; auto-creates if missing)*
 - `admin_settings.json` *(optional; auto-creates if missing)*
-- `.streamlit/secrets.toml` *(add via Cloud → App → Settings → Secrets)*
+- `.streamlit/secrets.toml` *(add via Cloud → App → Settings → Secrets)
 
 **Example secrets:**
 ```toml
@@ -97,8 +97,6 @@ powered by **PyStatR+ branding, AI-driven content generation, and PDF exports**.
 alierwai_password = "your_admin_password"
 client1_password  = "client1_pass"
 client2_password  = "client2_pass"
-
-
 
 ## 🔐 Secrets Configuration
 
@@ -111,12 +109,12 @@ client2_password  = "client2_pass"
     client2_password  = "client2_pass"
 
 ## 🎯 Usage
-  ### 🔑 1. Login
+### 🔑 1. Login
 
       * Username: alierwai, client1, or client2
       * Password: from .streamlit/secrets.toml or admin override
 
-  ### 🛠️ 2. Admin Dashboard
+### 🛠️ 2. Admin Dashboard
       
       * Password management (overrides & resets)
       * Client settings (Light/Dark theme)
@@ -124,14 +122,14 @@ client2_password  = "client2_pass"
       * Strategic content composer
       * Live preview & export hub
 
-  ### 👤 3. Client Dashboard
+### 👤 3. Client Dashboard
 
       * PyStatR+ branding locked
       * Add project details, opportunities, risks, scenarios, insights
       * Upload optional images
       * Preview and export your **PyStatR+ – branded portfolio PDF**
 
-  ### 📄 4. Exported Portfolio PDF
+### 📄 4. Exported Portfolio PDF
     
       * Professional cover page with logo & branding
       * Auto-generated section dividers, tables, and images
@@ -162,7 +160,6 @@ client2_password  = "client2_pass"
    * SaaS platform
 
 💡 Have a feature request? Open an [issue](https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/issues) or a [pull request](https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/pulls).
-
 
 ## 📜 License
 
