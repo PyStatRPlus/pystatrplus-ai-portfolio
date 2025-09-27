@@ -990,33 +990,6 @@ def apply_custom_css():
         color: #fff !important;
     }
 
-    /* Slider track */
-    .stSlider > div[data-baseweb="slider"] > div {
-        background: linear-gradient(90deg, #1E3A8A, #2563EB); /* deep blue gradient */
-        border-radius: 8px;
-        height: 10px;
-    }
-    
-    /* Slider handle (thumb) */
-    .stSlider > div[data-baseweb="slider"] > div > div[role="slider"] {
-        background-color: #38BDF8 !important; /* cyan */
-        border: 2px solid #FFD700 !important; /* gold outline */
-        box-shadow: 0 0 10px rgba(56,189,248,0.7);
-        transition: all 0.3s ease;
-    }
-    
-    /* Hover/focus glow */
-    .stSlider > div[data-baseweb="slider"] > div > div[role="slider"]:hover,
-    .stSlider > div[data-baseweb="slider"] > div > div[role="slider"]:focus {
-        box-shadow: 0 0 15px rgba(255,215,0,0.8); /* gold glow */
-        transform: scale(1.1); /* subtle zoom */
-    }
-    
-    /* Value label above slider */
-    .stSlider label, .stSlider span {
-        color: #FFFFFF !important; /* white text */
-        font-weight: 600;
-    }
 
     </style>
     """, unsafe_allow_html=True)
