@@ -150,20 +150,205 @@ def apply_custom_css():
     }
 
     /* Section Cards (Glassmorphism) */
-    .section-card, .client-container {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 20px;
-        padding: 2rem;
-        margin: 1.5rem 0;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(16px);
-        box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+    ./* Client Dashboard Cards */
+    .client-container {
+        background: rgba(30, 58, 138, 0.85); /* Deep Blue with transparency */
+        border: 1px solid rgba(56, 189, 248, 0.6); /* Cyan border */
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        box-shadow: 0 0 18px rgba(56, 189, 248, 0.35); /* Subtle glow */
         transition: all 0.3s ease;
     }
-    .section-card:hover, .client-container:hover {
-        box-shadow: 0 0 35px rgba(255, 215, 0, 0.6);
+    .client-container:hover {
+        box-shadow: 0 0 28px rgba(255, 215, 0, 0.7); /* Gold glow on hover */
         transform: translateY(-3px);
     }
+
+    /* Client section headers inside cards */
+    .client-container h3, 
+    .client-container h2 {
+        color: #FFD700 !important; /* Gold titles */
+        font-weight: 700;
+        text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+    }
+
+    /* Inputs inside client cards */
+    .client-container input, 
+    .client-container textarea {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(56, 189, 248, 0.5) !important;
+        border-radius: 8px !important;
+        color: #f1f5f9 !important;
+    }
+    .client-container input:focus, 
+    .client-container textarea:focus {
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.8) !important;
+        outline: none !important;
+    }
+
+    /* File Uploader Styling */
+    .stFileUploader {
+        background: rgba(30, 58, 138, 0.85) !important; /* Deep Blue background */
+        border: 1px solid rgba(56, 189, 248, 0.6) !important; /* Cyan border */
+        border-radius: 12px !important;
+        padding: 1rem !important;
+        margin: 0.5rem 0 !important;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.25) !important;
+        transition: all 0.3s ease;
+    }
+    .stFileUploader:hover {
+        box-shadow: 0 0 22px rgba(255, 215, 0, 0.7) !important; /* Gold glow on hover */
+        border-color: #FFD700 !important;
+    }
+    .stFileUploader label {
+        color: #FFD700 !important; /* Gold text for labels */
+        font-weight: 600 !important;
+    }
+    .stFileUploader div[data-testid="stFileUploaderDropzone"] {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 2px dashed rgba(56, 189, 248, 0.6) !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease;
+    }
+    .stFileUploader div[data-testid="stFileUploaderDropzone"]:hover {
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.7) !important;
+    }
+
+    /* Unified Buttons */
+    .stButton button, .stDownloadButton button {
+        background: linear-gradient(135deg, #38BDF8, #2563EB) !important; /* Cyan gradient */
+        color: #fff !important;
+        font-weight: 600 !important;
+        border: 1px solid rgba(56, 189, 248, 0.6) !important;
+        border-radius: 10px !important;
+        padding: 0.6rem 1.2rem !important;
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.4) !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+    .stButton button:hover, .stDownloadButton button:hover {
+        background: linear-gradient(135deg, #FFD700, #FFA500) !important; /* Gold gradient */
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.7) !important;
+        transform: translateY(-2px) !important;
+    }
+    .stButton button:active, .stDownloadButton button:active {
+        transform: scale(0.97) !important;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+    }
+
+    /* Sidebar Radio & Checkbox Styling */
+    section[data-testid="stSidebar"] .stRadio label,
+    section[data-testid="stSidebar"] .stCheckbox label {
+        color: #f1f5f9 !important;
+        font-weight: 500 !important;
+    }
+
+    /* Radio/Checkbox inputs */
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label,
+    section[data-testid="stSidebar"] .stCheckbox input[type="checkbox"] {
+        accent-color: #38BDF8 !important; /* Cyan checkmark */
+    }
+
+    /* Sidebar Slider Styling */
+    section[data-testid="stSidebar"] .stSlider [role="slider"] {
+        background: #38BDF8 !important;   /* cyan handle */
+        border: 2px solid #FFD700 !important; /* gold border */
+        box-shadow: 0 0 10px rgba(56,189,248,0.8) !important;
+    }
+
+    section[data-testid="stSidebar"] .stSlider [role="slider"]:hover {
+        background: #FFD700 !important;  /* gold handle on hover */
+        border-color: #38BDF8 !important;
+        box-shadow: 0 0 14px rgba(255,215,0,0.9) !important;
+    }
+
+    /* Slider track */
+    section[data-testid="stSidebar"] .stSlider [data-testid="stTickBar"] {
+        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
+        height: 6px !important;
+        border-radius: 3px;
+    }
+
+
+    /* Glow effect on hover */
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover,
+    section[data-testid="stSidebar"] .stCheckbox:hover {
+        text-shadow: 0 0 6px rgba(56,189,248,0.8) !important;
+        color: #FFD700 !important; /* Gold glow text */
+    }
+
+
+    /* Sidebar buttons */
+    section[data-testid="stSidebar"] button {
+        background: linear-gradient(135deg, #1e3a8a, #2563eb);
+        color: #f1f5f9 !important;
+        border: 1px solid rgba(56, 189, 248, 0.6);
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    section[data-testid="stSidebar"] button:hover {
+        background: linear-gradient(135deg, #FFD700, #facc15);
+        color: #1e3a8a !important;
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.8);
+        transform: translateY(-2px);
+    }
+
+    /* Sidebar radio & checkbox labels */
+    section[data-testid="stSidebar"] label {
+        color: #f1f5f9 !important;
+        font-weight: 500;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] > div:hover label,
+    section[data-testid="stSidebar"] div[role="checkbox"] > div:hover label {
+        color: #FFD700 !important;
+        text-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
+    }
+
+    /* Sidebar sliders */
+    section[data-testid="stSidebar"] .stSlider [role="slider"] {
+        background: #FFD700 !important; /* gold handle */
+        border: 2px solid #38BDF8 !important; /* cyan border */
+    }
+    section[data-testid="stSidebar"] .stSlider > div[role="presentation"] {
+        background: linear-gradient(90deg, #1e3a8a, #38BDF8) !important; /* track */
+    }
+
+    /* Sidebar Text Input Styling */
+    section[data-testid="stSidebar"] input[type="text"],
+    section[data-testid="stSidebar"] input[type="password"],
+    section[data-testid="stSidebar"] input[type="email"] {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid #38BDF8 !important;
+        border-radius: 10px !important;
+        color: #f1f5f9 !important;
+        padding: 8px 10px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+    /* Focused state (glow) */
+    section[data-testid="stSidebar"] input[type="text"]:focus,
+    section[data-testid="stSidebar"] input[type="password"]:focus,
+    section[data-testid="stSidebar"] input[type="email"]:focus {
+        outline: none !important;
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.9) !important;
+    }
+
+
+    /* Client dashboard section headers */
+    .client-container h3, 
+    .client-container h2 {
+        color: #FFD700 !important;   /* bright yellow */
+        text-shadow: 0 0 6px rgba(56, 189, 248, 0.6); /* cyan glow */
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
 
     /* Metric Cards */
     .metric-card {
@@ -197,40 +382,40 @@ def apply_custom_css():
     header {visibility: hidden;}
 
     /* Tabs: text colors */
-.stTabs [role="tab"]{
-  color:#FFD700 !important;         /* default = gold */
-  font-weight:600;
-  box-shadow:none !important;       /* nuke any built-in underline via shadow */
-  border-bottom:none !important;
-}
-.stTabs [role="tab"]:hover{
-  color:#38BDF8 !important;         /* hover = cyan */
-  text-shadow:0 0 6px rgba(56,189,248,.7);
-}
-.stTabs [role="tab"][aria-selected="true"]{
-  color:#38BDF8 !important;         /* active = cyan text */
-}
+    .stTabs [role="tab"]{
+      color:#FFD700 !important;         /* default = gold */
+      font-weight:600;
+      box-shadow:none !important;       /* nuke any built-in underline via shadow */
+      border-bottom:none !important;
+    }
+    .stTabs [role="tab"]:hover{
+      color:#38BDF8 !important;         /* hover = cyan */
+      text-shadow:0 0 6px rgba(56,189,248,.7);
+    }
+    .stTabs [role="tab"][aria-selected="true"]{
+      color:#38BDF8 !important;         /* active = cyan text */
+    }
 
-/* Streamlit/BaseWeb moving highlight bar (the underline) */
-.stTabs [data-baseweb="tab-highlight"]{
-  background-color:#FFD700 !important;   /* gold bar */
-  height:3px !important;
-  border-radius:3px !important;
-}
+    /* Streamlit/BaseWeb moving highlight bar (the underline) */
+    .stTabs [data-baseweb="tab-highlight"]{
+      background-color:#FFD700 !important;   /* gold bar */
+      height:3px !important;
+      border-radius:3px !important;
+    }
 
-/* Fallbacks for newer/older builds that don’t expose data-baseweb */
-.stTabs [class*="tab-highlight"], 
-.stTabs [class*="TabsHighlight"],
-.stTabs div[role="tablist"] > div:last-child{
-  background-color:#FFD700 !important;
-  height:3px !important;
-  border-radius:3px !important;
-}
+    /* Fallbacks for newer/older builds that don’t expose data-baseweb */
+    .stTabs [class*="tab-highlight"], 
+    .stTabs [class*="TabsHighlight"],
+    .stTabs div[role="tablist"] > div:last-child{
+      background-color:#FFD700 !important;
+      height:3px !important;
+      border-radius:3px !important;
+    }
 
-/* Remove any bottom border on the tab strip itself */
-.stTabs [role="tablist"]{
-  border-bottom:none !important;
-}
+    /* Remove any bottom border on the tab strip itself */
+    .stTabs [role="tablist"]{
+      border-bottom:none !important;
+    }
 
 
     /* Hyperlinks inside app */
@@ -244,10 +429,595 @@ def apply_custom_css():
         text-shadow: 0 0 8px rgba(255,215,0,0.7);
     }
 
+    /* Scenario Analysis & General Table Styling */
+    .stTable table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        border: 1px solid rgba(56,189,248,0.4) !important; /* cyan border */
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        font-size: 0.95rem !important;
+        color: #f1f5f9 !important;
+        background: rgba(15, 23, 42, 0.6) !important; /* glassy dark navy */
+        backdrop-filter: blur(12px) !important;
+        box-shadow: 0 0 18px rgba(56,189,248,0.3) !important;
+    }
+
+    /* Table headers */
+    .stTable th {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #FFD700 !important;
+        text-align: center !important;
+        padding: 10px !important;
+        font-weight: 700 !important;
+        border-bottom: 2px solid #FFD700 !important;
+    }
+
+    /* Table rows */
+    .stTable td {
+        padding: 8px 10px !important;
+        text-align: center !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+
+    /* Alternate row background */
+    .stTable tr:nth-child(even) td {
+        background: rgba(56,189,248,0.08) !important;
+    }
+
+    /* Hover effect */
+    .stTable tr:hover td {
+        background: rgba(255, 215, 0, 0.12) !important;
+        color: #FFD700 !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    /* Success box → Cyan glow */
+    .stAlert[data-baseweb="notification"][kind="success"] {
+        background: rgba(56,189,248,0.1) !important;
+        border: 1px solid #38BDF8 !important;
+        color: #38BDF8 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 0 12px rgba(56,189,248,0.6) !important;
+        font-weight: 600 !important;
+    }
+
+    /* Error box → Gold warning */
+    .stAlert[data-baseweb="notification"][kind="error"] {
+        background: rgba(255, 215, 0, 0.1) !important;
+        border: 1px solid #FFD700 !important;
+        color: #FFD700 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 0 12px rgba(255,215,0,0.6) !important;
+        font-weight: 600 !important;
+    }
+
+    /* Warning box → Yellow glow (softer than error) */
+    .stAlert[data-baseweb="notification"][kind="warning"] {
+        background: rgba(250, 204, 21, 0.1) !important;
+        border: 1px solid #facc15 !important;
+        color: #facc15 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 0 12px rgba(250, 204, 21, 0.6) !important;
+        font-weight: 600 !important;
+    }
+
+    /* Info box → Neutral cyan */
+    .stAlert[data-baseweb="notification"][kind="info"] {
+        background: rgba(15, 23, 42, 0.6) !important; /* dark navy glass */
+        border: 1px solid #38BDF8 !important;
+        color: #38BDF8 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 0 12px rgba(56,189,248,0.4) !important;
+        font-weight: 500 !important;
+    }
+
+    /* Keyframes for glowing pulse */
+    @keyframes pulseGlow {
+        0% { text-shadow: 0 0 6px rgba(56,189,248,0.6); }
+        50% { text-shadow: 0 0 16px rgba(255,215,0,0.9); }
+        100% { text-shadow: 0 0 6px rgba(56,189,248,0.6); }
+    }
+
+    /* 🔹 Success → 🚀 (bright yellow background) */
+    .stAlert[data-baseweb="notification"][kind="success"] {
+        background: rgba(255, 215, 0, 0.15) !important; /* soft gold */
+        border-left: 4px solid #FFD700 !important;
+        border-radius: 10px !important;
+        color: #FFD700 !important;
+    }
+    .stAlert[data-baseweb="notification"][kind="success"] [data-testid="stMarkdownContainer"] p:first-child:before {
+        content: "🚀 " !important;
+        font-size: 1.2rem;
+        margin-right: 6px;
+        animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    /* 🔹 Error → ❌ (deep red background) */
+    .stAlert[data-baseweb="notification"][kind="error"] {
+        background: rgba(220, 38, 38, 0.15) !important; /* soft red */
+        border-left: 4px solid #DC2626 !important;
+        border-radius: 10px !important;
+        color: #f87171 !important;
+    }
+    .stAlert[data-baseweb="notification"][kind="error"] [data-testid="stMarkdownContainer"] p:first-child:before {
+        content: "❌ " !important;
+        font-size: 1.2rem;
+        margin-right: 6px;
+        animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    /* 🔹 Warning → ⚡ (orange-gold background) */
+    .stAlert[data-baseweb="notification"][kind="warning"] {
+        background: rgba(251, 191, 36, 0.15) !important; /* amber */
+        border-left: 4px solid #fbbf24 !important;
+        border-radius: 10px !important;
+        color: #facc15 !important;
+    }
+    .stAlert[data-baseweb="notification"][kind="warning"] [data-testid="stMarkdownContainer"] p:first-child:before {
+        content: "⚡ " !important;
+        font-size: 1.2rem;
+        margin-right: 6px;
+        animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    /* 🔹 Info → 🔑 (cyan background) */
+    .stAlert[data-baseweb="notification"][kind="info"] {
+        background: rgba(56, 189, 248, 0.15) !important; /* cyan */
+        border-left: 4px solid #38BDF8 !important;
+        border-radius: 10px !important;
+        color: #38BDF8 !important;
+    }
+    .stAlert[data-baseweb="notification"][kind="info"] [data-testid="stMarkdownContainer"] p:first-child:before {
+        content: "🔑 " !important;
+        font-size: 1.2rem;
+        margin-right: 6px;
+        animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    /* Unified alert card style */
+    .stAlert[data-baseweb="notification"] {
+        width: 100% !important;
+        padding: 1rem 1.5rem !important;
+        margin: 1rem 0 !important;
+        border-radius: 16px !important;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        box-shadow: 0 0 20px rgba(56,189,248,0.25) !important;
+        backdrop-filter: blur(12px) !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+    /* On hover, make alerts glow brighter */
+    .stAlert[data-baseweb="notification"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 28px rgba(255, 215, 0, 0.5) !important;
+    }
+
+    /* Inner text spacing */
+    .stAlert [data-testid="stMarkdownContainer"] {
+        line-height: 1.6 !important;
+    }
+
+    /* Buttons inside alert boxes */
+    .stAlert button {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 0.5rem 1rem !important;
+        margin-top: 0.5rem !important;
+        box-shadow: 0 0 12px rgba(56,189,248,0.6) !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+    /* Hover effect */
+    .stAlert button:hover {
+        background: linear-gradient(135deg, #FFD700, #facc15) !important;
+        color: #1E3A8A !important;
+        box-shadow: 0 0 20px rgba(255,215,0,0.8) !important;
+        transform: translateY(-2px) scale(1.02);
+    }
+
+    /* Global Streamlit buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #fff !important;
+        font-weight: 700 !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 0.6rem 1.2rem !important;
+        margin: 0.5rem 0 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
+        transition: all 0.25s ease-in-out !important;
+    }
+
+    /* Hover effect */
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #FFD700, #facc15) !important;
+        color: #1E3A8A !important;
+        box-shadow: 0 0 24px rgba(255,215,0,0.9) !important;
+        transform: translateY(-2px) scale(1.03);
+    }
+
+    /* Disabled button state */
+    .stButton > button:disabled {
+        background: rgba(148,163,184,0.3) !important;
+        color: rgba(241,245,249,0.6) !important;
+        box-shadow: none !important;
+        cursor: not-allowed !important;
+    }
+
+    /* Tabs with cyan/gold glow */
+    .stTabs [role="tab"] {
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        padding: 0.6rem 1.2rem !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease-in-out !important;
+        color: #FFD700 !important; /* default gold */
+    }
+
+    /* Hover effect */
+    .stTabs [role="tab"]:hover {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #fff !important;
+        box-shadow: 0 0 14px rgba(56,189,248,0.7) !important;
+    }
+
+    /* Active tab */
+    .stTabs [role="tab"][aria-selected="true"] {
+        background: linear-gradient(135deg, #FFD700, #facc15) !important;
+        color: #1E3A8A !important;
+        box-shadow: 0 0 24px rgba(255,215,0,0.9) !important;
+        transform: translateY(-2px);
+    }
+
+    /* Underline highlight bar → hidden (we use glow instead) */
+    .stTabs [data-baseweb="tab-highlight"] {
+        background: transparent !important;
+    }
+    /* Tabs with cyan/gold glow */
+    .stTabs [role="tab"] {
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        padding: 0.6rem 1.2rem !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease-in-out !important;
+        color: #FFD700 !important; /* default gold */
+    }
+
+    /* Hover effect */
+    .stTabs [role="tab"]:hover {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #fff !important;
+        box-shadow: 0 0 14px rgba(56,189,248,0.7) !important;
+    }
+
+    /* Active tab */
+    .stTabs [role="tab"][aria-selected="true"] {
+        background: linear-gradient(135deg, #FFD700, #facc15) !important;
+        color: #1E3A8A !important;
+        box-shadow: 0 0 24px rgba(255,215,0,0.9) !important;
+        transform: translateY(-2px);
+    }
+
+    /* Underline highlight bar → hidden (we use glow instead) */
+    .stTabs [data-baseweb="tab-highlight"] {
+        background: transparent !important;
+    }
+
+
     /* Hide default Streamlit clutter */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+
+    /* Download Button Styling */
+    .stDownloadButton button {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #f1f5f9 !important;
+        border: 2px solid #FFD700 !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        padding: 10px 18px !important;
+        transition: all 0.3s ease-in-out !important;
+        box-shadow: 0 0 10px rgba(56,189,248,0.6) !important;
+    }
+
+    /* Sidebar Radio Buttons - PyStatR+ Glow */
+    [data-testid="stSidebar"] .stRadio > label {
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        color: #FFD700 !important; /* gold text */
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* ========================= */
+    /* ✅ Checkboxes - PyStatR+ Glow */
+    /* ========================= */
+    [data-testid="stSidebar"] .stCheckbox label {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: rgba(15, 23, 42, 0.4) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 10px !important;
+        padding: 0.6rem 1rem !important;
+        margin-bottom: 0.5rem !important;
+        font-weight: 500 !important;
+        color: #e5e7eb !important;
+        transition: all 0.3s ease-in-out !important;
+        cursor: pointer;
+    }
+
+    [data-testid="stSidebar"] .stCheckbox label:hover {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #fff !important;
+        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
+    }
+
+    [data-testid="stSidebar"] .stCheckbox input:checked + div {
+        background: linear-gradient(135deg, #FFD700, #facc15) !important;
+        border-radius: 6px !important;
+        box-shadow: 0 0 20px rgba(255,215,0,0.8) !important;
+    }
+
+    /* ========================= */
+    /* 🎚️ Sliders - PyStatR+ Glow */
+    /* ========================= */
+    [data-testid="stSidebar"] .stSlider > div {
+        padding: 0.8rem !important;
+        border-radius: 12px !important;
+        background: rgba(255,255,255,0.05) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+    }
+
+    [data-testid="stSidebar"] .stSlider .st-bb {
+        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
+        height: 6px !important;
+        border-radius: 4px !important;
+        box-shadow: 0 0 10px rgba(56,189,248,0.6), 0 0 15px rgba(255,215,0,0.7) !important;
+    }
+
+    [data-testid="stSidebar"] .stSlider .st-at {
+        background: #38BDF8 !important; /* unfilled portion */
+        opacity: 0.3 !important;
+    }
+
+    [data-testid="stSidebar"] .stSlider .st-af {
+        background: #FFD700 !important; /* handle active */
+        border: 2px solid #1E3A8A !important;
+        box-shadow: 0 0 10px rgba(255,215,0,0.9) !important;
+    }
+
+    /* ========================= */
+    /* ⬇️ Selectboxes - PyStatR+ Glow */
+    /* ========================= */
+    [data-testid="stSidebar"] .stSelectbox > div {
+        background: rgba(15, 23, 42, 0.5) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        border-radius: 12px !important;
+        padding: 0.6rem !important;
+        color: #e5e7eb !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+    [data-testid="stSidebar"] .stSelectbox > div:hover {
+        border-color: #38BDF8 !important;
+        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
+        color: #fff !important;
+    }
+
+    /* Dropdown menu itself */
+    [data-testid="stSidebar"] .stSelectbox [role="listbox"] {
+        background: #0f172a !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        border-radius: 10px !important;
+    }
+
+    [data-testid="stSidebar"] .stSelectbox [role="option"][aria-selected="true"] {
+        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+    }
+
+    /* ========================= */
+    /* 📝 Text Inputs - PyStatR+ Glow */
+    /* ========================= */
+    [data-testid="stSidebar"] .stTextInput input {
+        background: rgba(255,255,255,0.08) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        border-radius: 10px !important;
+        padding: 0.6rem 1rem !important;
+        color: #e5e7eb !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+    [data-testid="stSidebar"] .stTextInput input:focus {
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 14px rgba(255,215,0,0.8) !important;
+        outline: none !important;
+        color: #fff !important;
+    }
+
+
+    /* Radio options */
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {
+        background: rgba(15, 23, 42, 0.4) !important; /* dark glass */
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 12px !important;
+        padding: 0.6rem 1rem !important;
+        margin-bottom: 0.5rem !important;
+        font-weight: 500 !important;
+        color: #e5e7eb !important; /* light gray text */
+        transition: all 0.3s ease-in-out !important;
+        cursor: pointer;
+    }
+
+    /* Hover effect */
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #fff !important;
+        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
+    }
+
+    /* Active / Selected */
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] label[data-checked="true"] {
+        background: linear-gradient(135deg, #FFD700, #facc15) !important;
+        color: #1E3A8A !important;
+        box-shadow: 0 0 20px rgba(255,215,0,0.8) !important;
+        font-weight: 700 !important;
+        transform: translateY(-1px);
+    }
+
+
+    /* Hover effect */
+    .stDownloadButton button:hover {
+        background: linear-gradient(135deg, #FFD700, #38BDF8) !important;
+        color: #0f172a !important;  /* dark ink text for contrast */
+        border-color: #38BDF8 !important;
+        box-shadow: 0 0 18px rgba(255,215,0,0.9) !important;
+        transform: translateY(-2px) scale(1.03);
+    }
+
+    /* ================================== */
+    /* 🌟 Sidebar Glow Theme — PyStatR+   */
+    /* ================================== */
+    [data-testid="stSidebar"] {
+        background: rgba(15, 23, 42, 0.85) !important;
+        backdrop-filter: blur(14px) !important;
+        border-right: 1px solid rgba(255,255,255,0.1) !important;
+        box-shadow: 0 0 20px rgba(56,189,248,0.25) !important;
+    }
+
+    /* === Sidebar Headers === */
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3 {
+        color: #FFD700 !important; /* Gold headings */
+        text-shadow: 0 0 8px rgba(255,215,0,0.6) !important;
+    }
+
+    /* === Radios === */
+    [data-testid="stSidebar"] .stRadio [role="radio"] {
+        background: rgba(255,255,255,0.08) !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+        border-radius: 10px !important;
+        padding: 0.5rem 1rem !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+    [data-testid="stSidebar"] .stRadio [role="radio"]:hover {
+        border-color: #38BDF8 !important;
+        box-shadow: 0 0 10px rgba(56,189,248,0.7) !important;
+    }
+    [data-testid="stSidebar"] .stRadio [aria-checked="true"] {
+        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+    }
+
+    /* === Checkboxes === */
+    [data-testid="stSidebar"] .stCheckbox {
+        padding: 0.4rem 0.2rem !important;
+        border-radius: 8px !important;
+        transition: background 0.3s ease-in-out !important;
+    }
+    [data-testid="stSidebar"] .stCheckbox:hover {
+        background: rgba(56,189,248,0.15) !important;
+    }
+    [data-testid="stSidebar"] .stCheckbox input:checked ~ div {
+        color: #FFD700 !important;
+        font-weight: 600 !important;
+    }
+
+    /* === Sliders === */
+    [data-testid="stSidebar"] .stSlider [role="slider"] {
+        background: #FFD700 !important; /* Gold knob */
+        border: 2px solid #38BDF8 !important;
+        box-shadow: 0 0 12px rgba(56,189,248,0.6) !important;
+    }
+    [data-testid="stSidebar"] .stSlider [role="slider"]:hover {
+        box-shadow: 0 0 18px rgba(255,215,0,0.8) !important;
+    }
+    [data-testid="stSidebar"] .stSlider [role="slider"]::-webkit-slider-runnable-track {
+        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
+        border-radius: 6px !important;
+    }
+
+    /* === Selectboxes === */
+    [data-testid="stSidebar"] .stSelectbox > div {
+        background: rgba(15, 23, 42, 0.5) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        border-radius: 12px !important;
+        padding: 0.6rem !important;
+        color: #e5e7eb !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+    [data-testid="stSidebar"] .stSelectbox > div:hover {
+        border-color: #38BDF8 !important;
+        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
+        color: #fff !important;
+    }
+    [data-testid="stSidebar"] .stSelectbox [role="listbox"] {
+        background: #0f172a !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        border-radius: 10px !important;
+    }
+    [data-testid="stSidebar"] .stSelectbox [role="option"][aria-selected="true"] {
+        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+    }
+
+    /* === Text Inputs === */
+    [data-testid="stSidebar"] .stTextInput input {
+        background: rgba(255,255,255,0.08) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        border-radius: 10px !important;
+        padding: 0.6rem 1rem !important;
+        color: #e5e7eb !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+    [data-testid="stSidebar"] .stTextInput input:focus {
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 14px rgba(255,215,0,0.8) !important;
+        outline: none !important;
+        color: #fff !important;
+    }
+
+    /* Slider track */
+    .stSlider > div[data-baseweb="slider"] > div {
+        background: linear-gradient(90deg, #1E3A8A, #2563EB); /* deep blue gradient */
+        border-radius: 8px;
+        height: 10px;
+    }
+    
+    /* Slider handle (thumb) */
+    .stSlider > div[data-baseweb="slider"] > div > div[role="slider"] {
+        background-color: #38BDF8 !important; /* cyan */
+        border: 2px solid #FFD700 !important; /* gold outline */
+        box-shadow: 0 0 10px rgba(56,189,248,0.7);
+        transition: all 0.3s ease;
+    }
+    
+    /* Hover/focus glow */
+    .stSlider > div[data-baseweb="slider"] > div > div[role="slider"]:hover,
+    .stSlider > div[data-baseweb="slider"] > div > div[role="slider"]:focus {
+        box-shadow: 0 0 15px rgba(255,215,0,0.8); /* gold glow */
+        transform: scale(1.1); /* subtle zoom */
+    }
+    
+    /* Value label above slider */
+    .stSlider label, .stSlider span {
+        color: #FFFFFF !important; /* white text */
+        font-weight: 600;
+    }
+
     </style>
     """, unsafe_allow_html=True)
 
@@ -580,11 +1350,12 @@ def generate_pdf(filename, theme="Light", **kwargs):
 
 def main():
     st.set_page_config(
-        page_title="AI Consulting Portfolio Builder",
-        page_icon="🚀",
-        layout="wide",
-        initial_sidebar_state="expanded"
+    page_title="AI Consulting Portfolio Builder",
+    page_icon="docs/screenshots/logo.png",  # Path to your PyStatR+ logo
+    layout="wide",
+    initial_sidebar_state="expanded"
     )
+
     
     apply_custom_css()
     
@@ -656,6 +1427,17 @@ def main():
     if st.sidebar.button("🚪 End Session"):
         st.session_state.clear()
         st.rerun()
+
+    st.sidebar.markdown(
+        f"""
+        <div style="text-align:center; margin-bottom:1rem;">
+            <img src="https://raw.githubusercontent.com/PyStatRPlus/pystatrplus-ai-portfolio/main/docs/screenshots/logo.png" 
+                 alt="PyStatR+ Logo" width="120" style="border-radius:12px;" />
+        </div>
+        """,
+        unsafe_allow_html=True
+        )
+
     
     # User info
     st.sidebar.success(f"👋 Welcome **{st.session_state.user_name}** ({st.session_state.user_role.title()})")

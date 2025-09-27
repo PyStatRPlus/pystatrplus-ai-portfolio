@@ -53,4 +53,4 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 
 ## 💡 About PyStatR+
 **PyStatR+** is an educational data-science initiative founded in 2024 to bridge the gap between academic statistics and real-world data science.  
-Focused on healthcare analytics, mentorship, and practical applications of Python, R, and statistics, PyStatR+ empowers professionals to build impactful careers and deliver data-driven results.
+Focused on mentorship, professional development, and practical applications of Python, R, and statistics, PyStatR+ empowers professionals to build impactful careers and deliver data-driven results.

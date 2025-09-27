@@ -48,304 +48,180 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p align="center">
-<img src="docs/screenshots/logo.png" alt="PyStatR+ Logo" width="180">
-</p>
-<h1>
-🚀 PyStatR+ AI Portfolio Builder
-</h1>
-<p>
-</p><p>AI-powered consulting portfolio builder for professionals, clients, and organizations.<br> This app is built and maintained by <strong>PyStatR+</strong> to help transform expertise into polished, client-ready portfolios with branding, strategy, and export features.</p>
-<section id="release-notes" class="level2">
-<h2 class="anchored" data-anchor-id="release-notes">📄 Release Notes</h2>
-<p>See detailed updates in the <a href="docs/release_notes.md">Release Notes</a>.</p>
-<p></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="docs/screenshots/logo.png" class="img-fluid figure-img"></p>
+<figcaption>Logo</figcaption>
+</figure>
+</div>
+<section id="pystatr-ai-portfolio-builder" class="level1">
+<h1>🚀 PyStatR+ AI Portfolio Builder</h1>
+<p>AI-powered consulting portfolio builder for professionals, clients, and organizations.<br>
+This app is built and maintained by <strong>PyStatR+</strong> to help transform expertise into polished, client-ready portfolios with branding, strategy, and export features.</p>
 <p align="center">
 <img src="docs/screenshots/app_preview.png" alt="App Screenshot" width="600">
 </p>
-<p>
-<img src="https://img.shields.io/badge/Python-3.12-blue?logo=python"> <img src="https://img.shields.io/badge/Streamlit-1.30+-FF4B4B?logo=streamlit"> <img src="https://img.shields.io/badge/ReportLab-PDF-green"> <img src="https://img.shields.io/badge/License-MIT-yellow.svg"> <img src="https://img.shields.io/badge/Status-Active-success">
-</p>
-<p>
-<em>Futuristic Streamlit app</em> for building professional consulting portfolios,<br> powered by <strong>PyStatR+</strong> branding, AI-driven content generation, and PDF exports.
-</p>
+<p><img src="https://img.shields.io/badge/Python-3.12-blue?logo=python" class="img-fluid" alt="Python"> <img src="https://img.shields.io/badge/Streamlit-1.30+-FF4B4B?logo=streamlit" class="img-fluid" alt="Streamlit"> <img src="https://img.shields.io/badge/ReportLab-PDF-green.png" class="img-fluid" alt="ReportLab"> <img src="https://img.shields.io/badge/License-MIT-yellow.svg" class="img-fluid" alt="License: MIT"> <img src="https://img.shields.io/badge/Status-Active-success.png" class="img-fluid" alt="Status"> <img src="https://img.shields.io/github/v/release/PyStatRPlus/pystatrplus-ai-portfolio?logo=github&amp;label=Release.png" class="img-fluid" alt="GitHub release (latest by date)"></p>
+<p><strong>Futuristic Streamlit app</strong> for building professional consulting portfolios,<br>
+powered by <strong>PyStatR+ branding, AI-driven content generation, and PDF exports</strong>.</p>
 <blockquote class="blockquote">
-<em>Elevating Expertise into Professional Impact — Powered by PyStatR+</em>
+<p><em>Elevating Expertise into Professional Impact — Powered by PyStatR+</em></p>
 </blockquote>
 <hr>
-<h2 class="anchored">
-✨ Features
-</h2>
+<section id="features" class="level2">
+<h2 class="anchored" data-anchor-id="features">✨ Features</h2>
 <ul>
-<li>
-🔐 <strong>Secure Authentication</strong> (Admin &amp; Client roles with password overrides)
-</li>
-<li>
-🛠️ <strong>Admin Dashboard</strong>
+<li>🔐 <strong>Secure Authentication</strong> (Admin &amp; Client roles with password overrides)</li>
+<li>🛠️ <strong>Admin Dashboard</strong>
 <ul>
-<li>
-Password management
-</li>
-<li>
-Branding presets
-</li>
-<li>
-Client theme settings
-</li>
-</ul>
-</li>
-<li>
-👤 <strong>Client Dashboard</strong>
+<li>Password management</li>
+<li>Branding presets</li>
+<li>Client theme settings</li>
+</ul></li>
+<li>👤 <strong>Client Dashboard</strong>
 <ul>
-<li>
-Locked PyStatR+ branding
-</li>
-<li>
-Simple portfolio creation
-</li>
-</ul>
-</li>
-<li>
-🎨 <strong>Brand Identity Workshop</strong> (logos, colors, fonts, themes)
-</li>
-<li>
-📝 <strong>Content Composer</strong> (summary, risks, opportunities, scenarios, insights)
-</li>
-<li>
-👁️ <strong>Live Preview</strong> before export
-</li>
-<li>
-📄 <strong>Professional PDF Export</strong> (Light/Dark themes, watermark, branding)
-</li>
+<li>Locked PyStatR+ branding</li>
+<li>Simple portfolio creation</li>
+</ul></li>
+<li>🎨 <strong>Brand Identity Workshop</strong>
+<ul>
+<li>Save and load brand presets</li>
+<li>Upload logos, set colors, choose fonts</li>
+</ul></li>
+<li>📝 <strong>Content Composer</strong>
+<ul>
+<li>Guided sections for summary, risks, opportunities, scenarios, and insights</li>
+</ul></li>
+<li>👁️ <strong>Live Preview</strong>
+<ul>
+<li>Instant portfolio preview before export</li>
+</ul></li>
+<li>📄 <strong>Professional PDF Export</strong>
+<ul>
+<li>Light &amp; Dark themes</li>
+<li>Automatic watermark and branding</li>
+<li>Customizable sections with images</li>
+</ul></li>
 </ul>
 <hr>
-<h2 class="anchored">
-🛠️ Installation &amp; Deployment
-</h2>
-<h3 class="anchored">
-Local Setup
-</h3>
-<ol>
-<li>
-<strong>Clone the repository</strong>
-<pre><code>git clone https://github.com/your-username/pystatrplus-ai-portfolio.git
-cd pystatrplus-ai-portfolio</code></pre>
-</li>
-<li>
-<strong>Create and activate a virtual environment</strong>
-<pre><code>uv venv
-source .venv/bin/activate</code></pre>
-</li>
-<li>
-<strong>Install dependencies</strong>
-<pre><code>uv tool add -r requirements.txt</code></pre>
-</li>
-<li>
-<strong>Run the app</strong>
-<pre><code>uv run streamlit run app.py</code></pre>
-</li>
+</section>
+<section id="installation-deployment" class="level2">
+<h2 class="anchored" data-anchor-id="installation-deployment">🛠️ Installation &amp; Deployment</h2>
+<section id="local-setup" class="level3">
+<h3 class="anchored" data-anchor-id="local-setup">Local Setup</h3>
+<ol type="1">
+<li><p><strong>Clone the repository</strong></p>
+<p>```bash git clone https://github.com/PyStatRPlus/pystatrplus-ai-portfolio.git cd pystatrplus-ai-portfolio</p></li>
+<li><p><strong>Create and activate a virtual environment</strong> ```bash uv venv source .venv/bin/activate</p></li>
+<li><p><strong>Install dependencies</strong> ```bash uv tool add -r requirements.txt</p></li>
+<li><p><strong>Run the app</strong> ```bash uv run streamlit run app.py</p></li>
 </ol>
-<h3 class="anchored">
-Deploying to Streamlit Cloud
-</h3>
-<ol>
-<li>
-Push your repo to GitHub.
-</li>
-<li>
-Go to ☁️ <a href="https://streamlit.io/cloud">Streamlit Cloud</a>.
-</li>
-<li>
-Connect your repo and deploy.
-</li>
-<li>
-Ensure you include:
-<ul>
-<li>
-<code>requirements.txt</code>
-</li>
-<li>
-<code>runtime.txt</code> → <code>python-3.12</code>
-</li>
-<li>
-<code>branding_presets.json</code> (optional, auto-created)
-</li>
-<li>
-<code>admin_settings.json</code> (optional, auto-created)
-</li>
-<li>
-<code>.streamlit/secrets.toml</code> (⚠️ not pushed to GitHub)
-</li>
-</ul>
-</li>
-</ol>
-<hr>
-<h2 class="anchored">
-🔐 Secrets Configuration
-</h2>
-<p>
-Create a <code>.streamlit/secrets.toml</code> file (not committed to GitHub).
-</p>
-<pre><code>[users]
-alierwai_password = "your_admin_password"
-client1_password = "client1_pass"
-client2_password = "client2_pass"
-</code></pre>
-<hr>
-<h2 class="anchored">
-🎯 Usage
-</h2>
-<h3 class="anchored">
-🔑 Login
-</h3>
-<ul>
-<li>
-Enter your username: <code>alierwai</code>, <code>client1</code>, or <code>client2</code>
-</li>
-<li>
-Enter your password (from <code>secrets.toml</code> or admin override)
-</li>
-</ul>
-<h3 class="anchored">
-🛠️ Admin Dashboard
-</h3>
-<ul>
-<li>
-Password management (overrides &amp; resets)
-</li>
-<li>
-Branding presets (logo, color, typography)
-</li>
-<li>
-Content builder &amp; live preview
-</li>
-<li>
-Export polished, branded PDFs
-</li>
-</ul>
-<h3 class="anchored">
-👤 Client Dashboard
-</h3>
-<ul>
-<li>
-Locked PyStatR+ branding
-</li>
-<li>
-Add project details, opportunities, risks, scenarios
-</li>
-<li>
-Upload optional images
-</li>
-<li>
-Export professional portfolio PDF
-</li>
-</ul>
-<h3 class="anchored">
-📄 PDF Export
-</h3>
-<ul>
-<li>
-Branded cover page
-</li>
-<li>
-Section dividers &amp; tables
-</li>
-<li>
-Auto watermark (logo or text)
-</li>
-<li>
-Closing thank-you page
-</li>
-</ul>
-<hr>
-<h2 class="anchored">
-🗺️ Roadmap
-</h2>
-<ul>
-<li>
-<strong>🚀 Short-term (v1.x)</strong>
-<ul>
-<li>
-Multi-client admin management
-</li>
-<li>
-Rich text editor
-</li>
-<li>
-Theme preview toggle
-</li>
-<li>
-Expanded branding presets
-</li>
-</ul>
-</li>
-<li>
-<strong>🌐 Medium-term (v2.x)</strong>
-<ul>
-<li>
-AI-assisted content drafting
-</li>
-<li>
-Portfolio analytics
-</li>
-<li>
-Multi-language export
-</li>
-<li>
-Team collaboration mode
-</li>
-</ul>
-</li>
-<li>
-<strong>🔮 Long-term (v3.x+)</strong>
-<ul>
-<li>
-Cloud storage integration
-</li>
-<li>
-Custom industry PDF templates
-</li>
-<li>
-AI design assistant
-</li>
-<li>
-SaaS platform with subscription tiers
-</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h2 class="anchored">
-📜 License
-</h2>
-<p>
-This project is licensed under the 📜 <a href="https://opensource.org/licenses/MIT">MIT License</a>.<br> You are free to use, modify, and distribute the code with attribution.
-</p>
-<p>
-⚠️ Note: The <strong>PyStatR+</strong> brand name, logo, and branding elements are proprietary and not covered by this license.
-</p>
-<hr>
-<h2 class="anchored">
-🤝 Contributions
-</h2>
-<p>
-External contributions are welcome but not required.<br> PyStatR+ leads official development and long-term support.<br> If you’d like to suggest improvements, feel free to open an issue or submit a pull request.
-</p>
-<hr>
-<h2 class="anchored">
-💡 About PyStatR+
-</h2>
-<p>
-<strong>PyStatR+</strong> is an educational data-science initiative founded in 2024 to bridge the gap between academic statistics and real-world data science.<br> Focused on healthcare analytics, mentorship, and practical applications of Python, R, and statistics, PyStatR+ empowers professionals to build impactful careers and deliver data-driven results.
-</p>
-<h2 class="anchored">
-📄 Release Notes
-</h2>
-<div class="card">
-<p>
-See detailed updates in the <a href="docs/release_notes.md">Release Notes</a>.
-</p>
+</section>
+</section>
+<section id="deploy-to-streamlit-cloud" class="level2">
+<h2 class="anchored" data-anchor-id="deploy-to-streamlit-cloud">☁️ Deploy to Streamlit Cloud</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://streamlit.io/cloud"><img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" class="img-fluid figure-img"></a></p>
+<figcaption>Deploy to Streamlit</figcaption>
+</figure>
 </div>
+<section id="one-time-setup" class="level3">
+<h3 class="anchored" data-anchor-id="one-time-setup">One-time setup</h3>
+<ol type="1">
+<li>Push your code to GitHub: <code>https://github.com/PyStatRPlus/pystatrplus-ai-portfolio</code></li>
+<li>Open <strong>Streamlit Cloud</strong> → <strong>New app</strong>.</li>
+<li>Select the repo: <strong>PyStatRPlus/pystatrplus-ai-portfolio</strong>, branch: <strong>main</strong>, main file: <strong>app.py</strong>.</li>
+<li>Click <strong>Deploy</strong>.</li>
+</ol>
+</section>
+<section id="required-files" class="level3">
+<h3 class="anchored" data-anchor-id="required-files">Required files</h3>
+<ul>
+<li><code>app.py</code> (the Streamlit app)</li>
+<li><code>requirements.txt</code></li>
+<li><code>runtime.txt</code> → <code>python-3.13</code></li>
+<li><code>branding_presets.json</code> <em>(optional; auto-creates if missing)</em></li>
+<li><code>admin_settings.json</code> <em>(optional; auto-creates if missing)</em></li>
+<li><code>.streamlit/secrets.toml</code> <em>(add via Cloud → App → Settings → Secrets)</em></li>
+</ul>
+<p><strong>Example secrets:</strong> ```toml [users] alierwai_password = “your_admin_password” client1_password = “client1_pass” client2_password = “client2_pass”</p>
+</section>
+</section>
+<section id="secrets-configuration" class="level2">
+<h2 class="anchored" data-anchor-id="secrets-configuration">🔐 Secrets Configuration</h2>
+<p>Create .streamlit/secrets.toml (it is ignored by Git):</p>
+<pre><code>```toml
+[users]
+alierwai_password = "your_admin_password"
+client1_password  = "client1_pass"
+client2_password  = "client2_pass"</code></pre>
+</section>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">🎯 Usage</h2>
+<p>### 🔑 1. Login</p>
+<pre><code>  * Username: alierwai, client1, or client2
+  * Password: from .streamlit/secrets.toml or admin override</code></pre>
+<p>### 🛠️ 2. Admin Dashboard</p>
+<pre><code>  * Password management (overrides &amp; resets)
+  * Client settings (Light/Dark theme)
+  * Branding presets
+  * Strategic content composer
+  * Live preview &amp; export hub</code></pre>
+<p>### 👤 3. Client Dashboard</p>
+<pre><code>  * PyStatR+ branding locked
+  * Add project details, opportunities, risks, scenarios, insights
+  * Upload optional images
+  * Preview and export your **PyStatR+ – branded portfolio PDF**</code></pre>
+<p>### 📄 4. Exported Portfolio PDF</p>
+<pre><code>  * Professional cover page with logo &amp; branding
+  * Auto-generated section dividers, tables, and images
+  * Built-in watermark (logo or text fallback)
+  * Closing thank-you page with PyStatR+ branding</code></pre>
+</section>
+<section id="roadmap" class="level2">
+<h2 class="anchored" data-anchor-id="roadmap">🗺️ Roadmap</h2>
+<p><strong>Short-term (v1.x)</strong></p>
+<ul>
+<li>Multi-client management</li>
+<li>Richer text editor</li>
+<li>Theme preview toggle</li>
+<li>Flexible branding presets</li>
+</ul>
+<p><strong>Medium-term (v2.x)</strong></p>
+<ul>
+<li>AI-assisted drafting</li>
+<li>Portfolio analytics</li>
+<li>Multi-language export</li>
+<li>Team collaboration mode</li>
+</ul>
+<p><strong>Long-term (v3.x+)</strong></p>
+<ul>
+<li>Cloud storage integrations</li>
+<li>Industry PDF templates</li>
+<li>AI design assistant</li>
+<li>SaaS platform</li>
+</ul>
+<p>💡 Have a feature request? Open an <a href="https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/issues">issue</a> or a <a href="https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/pulls">pull request</a>.</p>
+</section>
+<section id="license" class="level2">
+<h2 class="anchored" data-anchor-id="license">📜 License</h2>
+<p>This project is licensed under the 📜 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" class="img-fluid" alt="License: MIT"></a>. You are free to use, modify, and distribute it with attribution.</p>
+<p><strong>⚠️ Disclaimer:</strong> The PyStatR+ brand name, logo, and branding elements are proprietary and not covered under this license. This project is for <strong>educational and professional development purposes only</strong>, and is <strong>independent of any employer or healthcare system.</strong></p>
+</section>
+<section id="contributions" class="level2">
+<h2 class="anchored" data-anchor-id="contributions">🤝 Contributions</h2>
+<p>External contributions are welcome but not required. PyStatR+ leads official development and long-term support.</p>
+</section>
+<section id="about-pystatr" class="level2">
+<h2 class="anchored" data-anchor-id="about-pystatr">💡 About PyStatR+</h2>
+<p>PyStatR+ is an educational data-science initiative founded in 2024 to bridge the gap between academic statistics and real-world data science. Focused on mentorship, professional development, and practical applications of Python, R, and statistics, PyStatR+ empowers professionals to build impactful careers and deliver data-driven results.</p>
+</section>
+<section id="release-notes" class="level2">
+<h2 class="anchored" data-anchor-id="release-notes">📄 Release Notes</h2>
+<p>See all updates in the <a href="docs/release_notes.md">Release Notes</a>.<br>
+You can also browse tagged versions on the <a href="https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/releases">GitHub Releases page</a>.</p>
+</section>
 </section>
 
 </main>
