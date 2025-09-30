@@ -1,4 +1,3 @@
-
 ![Logo](docs/screenshots/logo.png)
 
 # 🚀 PyStatR+ AI Portfolio Builder
@@ -57,130 +56,135 @@ powered by **PyStatR+ branding, AI-driven content generation, and PDF exports**.
    ```bash
    git clone https://github.com/PyStatRPlus/pystatrplus-ai-portfolio.git
    cd pystatrplus-ai-portfolio
-2. **Create and activate a virtual environment**
-  ```bash
-    uv venv
-    source .venv/bin/activate
+   ```
 
+2. Create and activate a virtual environment
 
-3. **Install dependencies**
-  ```bash
-  uv tool add -r requirements.txt
+   ```bash
+   uv venv
+   source .venv/bin/activate
+  ```
 
+3. Install dependencies
 
-4. **Run the app**
-  ```bash
-  uv run streamlit run app.py
-
+   ```bash
+   uv tool add -r requirements.txt
+   ```
+4. Run the app
+   ```bash
+   uv run streamlit run app.py
+   ```
 
 ## ☁️ Deploy to Streamlit Cloud
+☁️ Deploy to Streamlit Cloud
 
-[![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://streamlit.io/cloud)
+<img alt="Deploy to Streamlit" src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg">
 
-### One-time setup
-1. Push your code to GitHub: `https://github.com/PyStatRPlus/pystatrplus-ai-portfolio`
-2. Open **Streamlit Cloud** → **New app**.
-3. Select the repo: **PyStatRPlus/pystatrplus-ai-portfolio**, branch: **main**, main file: **app.py**.
-4. Click **Deploy**.
+**One-time setup**
 
-### Required files
-- `app.py` (the Streamlit app)
-- `requirements.txt`
-- `runtime.txt` → `python-3.13`
-- `branding_presets.json` *(optional; auto-creates if missing)*
-- `admin_settings.json` *(optional; auto-creates if missing)*
-- `.streamlit/secrets.toml` *(add via Cloud → App → Settings → Secrets)
+1. Push your code to GitHub: https://github.com/PyStatRPlus/pystatrplus-ai-portfolio
+2. Open Streamlit Cloud → New app.
+3. Select the repo: PyStatRPlus/pystatrplus-ai-portfolio, branch: main, main file: app.py.
+4. Click Deploy.
+
+**Required files**
+
+* app.py (the Streamlit app)
+* requirements.txt
+* runtime.txt → python-3.13
+* branding_presets.json (optional; auto-creates if missing)
+* admin_settings.json (optional; auto-creates if missing)
+* .streamlit/secrets.toml (add via Cloud → App → Settings → Secrets)
 
 **Example secrets:**
+
 ```toml
 [users]
 alierwai_password = "your_admin_password"
 client1_password  = "client1_pass"
 client2_password  = "client2_pass"
+```
 
 ## 🔐 Secrets Configuration
 
-  Create .streamlit/secrets.toml (it is ignored by Git):
+Create .streamlit/secrets.toml (it is ignored by Git):
 
-    ```toml
-    [users]
-    alierwai_password = "your_admin_password"
-    client1_password  = "client1_pass"
-    client2_password  = "client2_pass"
+```toml
+[users]
+alierwai_password = "your_admin_password"
+client1_password  = "client1_pass"
+client2_password  = "client2_pass"
+```
 
 ## 🎯 Usage
-### 🔑 1. Login
+**🔑 1. Login**
 
-      * Username: alierwai, client1, or client2
-      * Password: from .streamlit/secrets.toml or admin override
+- Username: alierwai, client1, or client2
+- Password: from .streamlit/secrets.toml or admin override
 
-### 🛠️ 2. Admin Dashboard
-      
-      * Password management (overrides & resets)
-      * Client settings (Light/Dark theme)
-      * Branding presets
-      * Strategic content composer
-      * Live preview & export hub
+**🛠️ 2. Admin Dashboard**
 
-### 👤 3. Client Dashboard
+- Password management (overrides & resets)
+- Client settings (Light/Dark theme)
+- Branding presets
+- Strategic content composer
+- Live preview & export hub
 
-      * PyStatR+ branding locked
-      * Add project details, opportunities, risks, scenarios, insights
-      * Upload optional images
-      * Preview and export your **PyStatR+ – branded portfolio PDF**
+**👤 3. Client Dashboard**
 
-### 📄 4. Exported Portfolio PDF
-    
-      * Professional cover page with logo & branding
-      * Auto-generated section dividers, tables, and images
-      * Built-in watermark (logo or text fallback)
-      * Closing thank-you page with PyStatR+ branding
+- PyStatR+ branding locked
+- Add project details, opportunities, risks, scenarios, insights
+- Upload optional images
+- Preview and export your PyStatR+ – branded portfolio PDF
 
-## 🗺️ Roadmap
+**📄 4. Exported Portfolio PDF**
 
-  **Short-term (v1.x)**
-  
-   * Multi-client management
-   * Richer text editor
-   * Theme preview toggle
-   * Flexible branding presets
-   
-  **Medium-term (v2.x)**
-  
-   * AI-assisted drafting
-   * Portfolio analytics
-   * Multi-language export
-   * Team collaboration mode
+- Professional cover page with logo & branding
+- Auto-generated section dividers, tables, and images
+- Built-in watermark (logo or text fallback)
+- Closing thank-you page with PyStatR+ branding
 
-  **Long-term (v3.x+)**
+**🗺️ Roadmap**
 
-   * Cloud storage integrations
-   * Industry PDF templates
-   * AI design assistant
-   * SaaS platform
+**Short-term (v1.x)**
 
-💡 Have a feature request? Open an [issue](https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/issues) or a [pull request](https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/pulls).
+* Multi-client management
+* Richer text editor
+* Theme preview toggle
+* Flexible branding presets
+
+**Medium-term (v2.x)**
+
+* AI-assisted drafting
+* Portfolio analytics
+* Multi-language export
+* Team collaboration mode
+
+
+**Long-term (v3.x+)**
+
+* Cloud storage integrations
+* Industry PDF templates
+* AI design assistant
+* SaaS platform
+
+💡 Have a feature request? Open an issue or a pull request.
 
 ## 📜 License
 
-This project is licensed under the 📜 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT).
-You are free to use, modify, and distribute it with attribution.
+This project is licensed under the 📜 <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg">
 
-**⚠️ Disclaimer:** The PyStatR+ brand name, logo, and branding elements are proprietary and not covered under this license.
-This project is for **educational and professional development purposes only**, and is **independent of any employer or healthcare system.**
+. You are free to use, modify, and distribute it with attribution.
+
+**⚠️ Disclaimer:** The PyStatR+ brand name, logo, and branding elements are proprietary and not covered under this license. This project is for educational and professional development purposes only, and is independent of any employer or healthcare system.
 
 ## 🤝 Contributions
-
-External contributions are welcome but not required.
-PyStatR+ leads official development and long-term support.
+External contributions are welcome but not required. PyStatR+ leads official development and long-term support.
 
 ## 💡 About PyStatR+
+PyStatR+ is an educational data-science initiative founded in 2024 to bridge the gap between academic statistics and real-world data science. Focused on mentorship, professional development, and practical applications of Python, R, and statistics, PyStatR+ empowers professionals to build impactful careers and deliver data-driven results.
 
-PyStatR+ is an educational data-science initiative founded in 2024 to bridge the gap between academic statistics and real-world data science.
-Focused on mentorship, professional development, and practical applications of Python, R, and statistics, PyStatR+ empowers professionals to build impactful careers and deliver data-driven results.
+## 📄 Release Notes
+See all updates in the Release Notes.
+You can also browse tagged versions on the GitHub Releases page.
 
-## 📄 Release Notes  
-
-See all updates in the [Release Notes](docs/release_notes.md).  
-You can also browse tagged versions on the [GitHub Releases page](https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/releases).  

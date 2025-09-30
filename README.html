@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -111,84 +146,82 @@ powered by <strong>PyStatR+ branding, AI-driven content generation, and PDF expo
 <h3 class="anchored" data-anchor-id="local-setup">Local Setup</h3>
 <ol type="1">
 <li><p><strong>Clone the repository</strong></p>
-<p>```bash git clone https://github.com/PyStatRPlus/pystatrplus-ai-portfolio.git cd pystatrplus-ai-portfolio</p></li>
-<li><p><strong>Create and activate a virtual environment</strong> ```bash uv venv source .venv/bin/activate</p></li>
-<li><p><strong>Install dependencies</strong> ```bash uv tool add -r requirements.txt</p></li>
-<li><p><strong>Run the app</strong> ```bash uv run streamlit run app.py</p></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/PyStatRPlus/pystatrplus-ai-portfolio.git</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pystatrplus-ai-portfolio</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Create and activate a virtual environment</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> venv</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Install dependencies</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> tool add <span class="at">-r</span> requirements.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Run the app</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run streamlit run app.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 </ol>
 </section>
 </section>
 <section id="deploy-to-streamlit-cloud" class="level2">
 <h2 class="anchored" data-anchor-id="deploy-to-streamlit-cloud">☁️ Deploy to Streamlit Cloud</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="https://streamlit.io/cloud"><img src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg" class="img-fluid figure-img"></a></p>
-<figcaption>Deploy to Streamlit</figcaption>
-</figure>
-</div>
-<section id="one-time-setup" class="level3">
-<h3 class="anchored" data-anchor-id="one-time-setup">One-time setup</h3>
+<p>☁️ Deploy to Streamlit Cloud</p>
+<p><img alt="Deploy to Streamlit" src="https://static.streamlit.io/badges/streamlit_badge_black_white.svg"></p>
+<p><strong>One-time setup</strong></p>
 <ol type="1">
-<li>Push your code to GitHub: <code>https://github.com/PyStatRPlus/pystatrplus-ai-portfolio</code></li>
-<li>Open <strong>Streamlit Cloud</strong> → <strong>New app</strong>.</li>
-<li>Select the repo: <strong>PyStatRPlus/pystatrplus-ai-portfolio</strong>, branch: <strong>main</strong>, main file: <strong>app.py</strong>.</li>
-<li>Click <strong>Deploy</strong>.</li>
+<li>Push your code to GitHub: https://github.com/PyStatRPlus/pystatrplus-ai-portfolio</li>
+<li>Open Streamlit Cloud → New app.</li>
+<li>Select the repo: PyStatRPlus/pystatrplus-ai-portfolio, branch: main, main file: app.py.</li>
+<li>Click Deploy.</li>
 </ol>
-</section>
-<section id="required-files" class="level3">
-<h3 class="anchored" data-anchor-id="required-files">Required files</h3>
+<p><strong>Required files</strong></p>
 <ul>
-<li><code>app.py</code> (the Streamlit app)</li>
-<li><code>requirements.txt</code></li>
-<li><code>runtime.txt</code> → <code>python-3.13</code></li>
-<li><code>branding_presets.json</code> <em>(optional; auto-creates if missing)</em></li>
-<li><code>admin_settings.json</code> <em>(optional; auto-creates if missing)</em></li>
-<li><code>.streamlit/secrets.toml</code> *(add via Cloud → App → Settings → Secrets)</li>
+<li>app.py (the Streamlit app)</li>
+<li>requirements.txt</li>
+<li>runtime.txt → python-3.13</li>
+<li>branding_presets.json (optional; auto-creates if missing)</li>
+<li>admin_settings.json (optional; auto-creates if missing)</li>
+<li>.streamlit/secrets.toml (add via Cloud → App → Settings → Secrets)</li>
 </ul>
-<p><strong>Example secrets:</strong> ```toml [users] alierwai_password = “your_admin_password” client1_password = “client1_pass” client2_password = “client2_pass”</p>
-</section>
+<p><strong>Example secrets:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[users]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">alierwai_password</span> <span class="op">=</span> <span class="st">"your_admin_password"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">client1_password</span>  <span class="op">=</span> <span class="st">"client1_pass"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">client2_password</span>  <span class="op">=</span> <span class="st">"client2_pass"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="secrets-configuration" class="level2">
 <h2 class="anchored" data-anchor-id="secrets-configuration">🔐 Secrets Configuration</h2>
 <p>Create .streamlit/secrets.toml (it is ignored by Git):</p>
-<pre><code>```toml
-[users]
-alierwai_password = "your_admin_password"
-client1_password  = "client1_pass"
-client2_password  = "client2_pass"</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[users]</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">alierwai_password</span> <span class="op">=</span> <span class="st">"your_admin_password"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">client1_password</span>  <span class="op">=</span> <span class="st">"client1_pass"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">client2_password</span>  <span class="op">=</span> <span class="st">"client2_pass"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="usage" class="level2">
 <h2 class="anchored" data-anchor-id="usage">🎯 Usage</h2>
-<section id="login" class="level3">
-<h3 class="anchored" data-anchor-id="login">🔑 1. Login</h3>
-<pre><code>  * Username: alierwai, client1, or client2
-  * Password: from .streamlit/secrets.toml or admin override</code></pre>
-</section>
-<section id="admin-dashboard" class="level3">
-<h3 class="anchored" data-anchor-id="admin-dashboard">🛠️ 2. Admin Dashboard</h3>
-<pre><code>  * Password management (overrides &amp; resets)
-  * Client settings (Light/Dark theme)
-  * Branding presets
-  * Strategic content composer
-  * Live preview &amp; export hub</code></pre>
-</section>
-<section id="client-dashboard" class="level3">
-<h3 class="anchored" data-anchor-id="client-dashboard">👤 3. Client Dashboard</h3>
-<pre><code>  * PyStatR+ branding locked
-  * Add project details, opportunities, risks, scenarios, insights
-  * Upload optional images
-  * Preview and export your **PyStatR+ – branded portfolio PDF**</code></pre>
-</section>
-<section id="exported-portfolio-pdf" class="level3">
-<h3 class="anchored" data-anchor-id="exported-portfolio-pdf">📄 4. Exported Portfolio PDF</h3>
-<pre><code>  * Professional cover page with logo &amp; branding
-  * Auto-generated section dividers, tables, and images
-  * Built-in watermark (logo or text fallback)
-  * Closing thank-you page with PyStatR+ branding</code></pre>
-</section>
-</section>
-<section id="roadmap" class="level2">
-<h2 class="anchored" data-anchor-id="roadmap">🗺️ Roadmap</h2>
+<p><strong>🔑 1. Login</strong></p>
+<ul>
+<li>Username: alierwai, client1, or client2</li>
+<li>Password: from .streamlit/secrets.toml or admin override</li>
+</ul>
+<p><strong>🛠️ 2. Admin Dashboard</strong></p>
+<ul>
+<li>Password management (overrides &amp; resets)</li>
+<li>Client settings (Light/Dark theme)</li>
+<li>Branding presets</li>
+<li>Strategic content composer</li>
+<li>Live preview &amp; export hub</li>
+</ul>
+<p><strong>👤 3. Client Dashboard</strong></p>
+<ul>
+<li>PyStatR+ branding locked</li>
+<li>Add project details, opportunities, risks, scenarios, insights</li>
+<li>Upload optional images</li>
+<li>Preview and export your PyStatR+ – branded portfolio PDF</li>
+</ul>
+<p><strong>📄 4. Exported Portfolio PDF</strong></p>
+<ul>
+<li>Professional cover page with logo &amp; branding</li>
+<li>Auto-generated section dividers, tables, and images</li>
+<li>Built-in watermark (logo or text fallback)</li>
+<li>Closing thank-you page with PyStatR+ branding</li>
+</ul>
+<p><strong>🗺️ Roadmap</strong></p>
 <p><strong>Short-term (v1.x)</strong></p>
 <ul>
 <li>Multi-client management</li>
@@ -210,12 +243,13 @@ client2_password  = "client2_pass"</code></pre>
 <li>AI design assistant</li>
 <li>SaaS platform</li>
 </ul>
-<p>💡 Have a feature request? Open an <a href="https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/issues">issue</a> or a <a href="https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/pulls">pull request</a>.</p>
+<p>💡 Have a feature request? Open an issue or a pull request.</p>
 </section>
 <section id="license" class="level2">
 <h2 class="anchored" data-anchor-id="license">📜 License</h2>
-<p>This project is licensed under the 📜 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" class="img-fluid" alt="License: MIT"></a>. You are free to use, modify, and distribute it with attribution.</p>
-<p><strong>⚠️ Disclaimer:</strong> The PyStatR+ brand name, logo, and branding elements are proprietary and not covered under this license. This project is for <strong>educational and professional development purposes only</strong>, and is <strong>independent of any employer or healthcare system.</strong></p>
+<p>This project is licensed under the 📜 <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></p>
+<p>. You are free to use, modify, and distribute it with attribution.</p>
+<p><strong>⚠️ Disclaimer:</strong> The PyStatR+ brand name, logo, and branding elements are proprietary and not covered under this license. This project is for educational and professional development purposes only, and is independent of any employer or healthcare system.</p>
 </section>
 <section id="contributions" class="level2">
 <h2 class="anchored" data-anchor-id="contributions">🤝 Contributions</h2>
@@ -227,8 +261,7 @@ client2_password  = "client2_pass"</code></pre>
 </section>
 <section id="release-notes" class="level2">
 <h2 class="anchored" data-anchor-id="release-notes">📄 Release Notes</h2>
-<p>See all updates in the <a href="docs/release_notes.md">Release Notes</a>.<br>
-You can also browse tagged versions on the <a href="https://github.com/PyStatRPlus/pystatrplus-ai-portfolio/releases">GitHub Releases page</a>.</p>
+<p>See all updates in the Release Notes. You can also browse tagged versions on the GitHub Releases page.</p>
 </section>
 </section>
 
