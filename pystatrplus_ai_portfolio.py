@@ -38,7 +38,6 @@ def save_admin_settings(settings):
     with open(ADMIN_CONFIG_FILE, "w") as f:
         json.dump(settings, f, indent=2)
 
-# Simplified authentication
 def simple_hash(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
@@ -46,10 +45,10 @@ def check_credentials(username: str, password: str):
     if "password_overrides" not in st.session_state:
         st.session_state.password_overrides = {}
 
-    # Load admin settings for expiry policy
     admin_settings = load_admin_settings()
     expiry_hours = admin_settings.get("override_expiry_hours", 24)
-    max_age = expiry_hours * 3600  # seconds
+    max_age = expiry_hours * 3600
+    now = datetime.now()
 
     users = {
         "alierwai": {
@@ -69,158 +68,130 @@ def check_credentials(username: str, password: str):
         }
     }
 
-    override_used = False
-    nnow = datetime.now()
-
     if username in st.session_state.password_overrides:
         entry = st.session_state.password_overrides[username]
         age = (now - entry["timestamp"]).total_seconds()
 
         if age <= max_age:
-            # Override is still valid → use it
             users[username]["password"] = simple_hash(entry["password"])
-            override_used = True
         else:
-            # Expired → drop it
             del st.session_state.password_overrides[username]
-            if "password_overrides" in admin_settings and username in admin_settings["password_overrides"]:
-                del admin_settings["password_overrides"][username]
-                save_admin_settings(admin_settings)
 
-    # Validate credentials
     if username in users and users[username]["password"] == simple_hash(password):
-        users[username]["override_used"] = override_used
         return users[username]
 
     return None
 
-
 def check_session_timeout():
     current_time = time.time()
     if "last_activity" in st.session_state:
-        if current_time - st.session_state["last_activity"] > 900:  # 15 minutes
+        if current_time - st.session_state["last_activity"] > 900:
             st.session_state.clear()
             st.rerun()
     st.session_state["last_activity"] = current_time
 
 def apply_custom_css():
     st.markdown("""
-    
     <style>
-    /* Futuristic animated background */
-    .stApp {
-        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #2563eb, #38bdf8);
-        background-size: 400% 400%;
-        animation: gradientShift 18s ease infinite;
-        font-family: 'Poppins', sans-serif;
-        color: #f1f5f9;
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    
+    /* ========================================= */
+    /* CORE LAYOUT - Maximum Specificity */
+    /* ========================================= */
+    
+    .stApp,
+    .stApp > div,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewContainer"] > div {
+        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #2563eb, #38bdf8) !important;
+        background-size: 400% 400% !important;
+        animation: gradientShift 18s ease infinite !important;
+        font-family: 'Poppins', sans-serif !important;
+        color: #f1f5f9 !important;
     }
+    
     @keyframes gradientShift {
         0% {background-position: 0% 50%;}
         50% {background-position: 100% 50%;}
         100% {background-position: 0% 50%;}
     }
-
-    /* Headers */
+    
+    /* ========================================= */
+    /* HEADERS - Multiple Selectors */
+    /* ========================================= */
+    
     .main-header {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(18px);
-        border-radius: 20px;
-        padding: 2rem;
-        margin: 2rem 0;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        text-align: center;
-    }
-    .main-title {
-        font-size: 3rem;
-        font-weight: 800;
-        background: linear-gradient(90deg, #FFD700, #38BDF8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 1rem;
-        letter-spacing: 1px;
-    }
-    .subtitle {
-        font-size: 1.2rem;
-        color: #38BDF8;
-        font-weight: 300;
-        margin-bottom: 1rem;
-        text-shadow: 0 0 10px rgba(56,189,248,0.7);
-    }
-
-    /* Section Cards (Glassmorphism) */
-    /* Client Dashboard Cards */
-    .client-container {
-        background: rgba(30, 58, 138, 0.85); /* Deep Blue with transparency */
-        border: 1px solid rgba(56, 189, 248, 0.6); /* Cyan border */
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        box-shadow: 0 0 18px rgba(56, 189, 248, 0.35); /* Subtle glow */
-        transition: all 0.3s ease;
-    }
-    .client-container:hover {
-        box-shadow: 0 0 28px rgba(255, 215, 0, 0.7); /* Gold glow on hover */
-        transform: translateY(-3px);
-    }
-
-    /* Client section headers inside cards */
-    .client-container h3, 
-    .client-container h2 {
-        color: #FFD700 !important; /* Gold titles */
-        font-weight: 700;
-        text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
-    }
-
-    /* Inputs inside client cards */
-    .client-container input, 
-    .client-container textarea {
-        background: rgba(255, 255, 255, 0.08) !important;
-        border: 1px solid rgba(56, 189, 248, 0.5) !important;
-        border-radius: 8px !important;
-        color: #f1f5f9 !important;
-    }
-    .client-container input:focus, 
-    .client-container textarea:focus {
-        border-color: #FFD700 !important;
-        box-shadow: 0 0 12px rgba(255, 215, 0, 0.8) !important;
-        outline: none !important;
-    }
-
-    /* File Uploader Styling */
-    .stFileUploader {
-        background: rgba(30, 58, 138, 0.85) !important; /* Deep Blue background */
-        border: 1px solid rgba(56, 189, 248, 0.6) !important; /* Cyan border */
-        border-radius: 12px !important;
-        padding: 1rem !important;
-        margin: 0.5rem 0 !important;
-        box-shadow: 0 0 15px rgba(56, 189, 248, 0.25) !important;
-        transition: all 0.3s ease;
-    }
-    .stFileUploader:hover {
-        box-shadow: 0 0 22px rgba(255, 215, 0, 0.7) !important; /* Gold glow on hover */
-        border-color: #FFD700 !important;
-    }
-    .stFileUploader label {
-        color: #FFD700 !important; /* Gold text for labels */
-        font-weight: 600 !important;
-    }
-    .stFileUploader div[data-testid="stFileUploaderDropzone"] {
-        background: rgba(17, 24, 39, 0.05) !important;
-        border: 2px dashed rgba(56, 189, 248, 0.6) !important;
-        border-radius: 10px !important;
-        transition: all 0.3s ease;
-    }
-    .stFileUploader div[data-testid="stFileUploaderDropzone"]:hover {
-        border-color: #FFD700 !important;
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.7) !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(18px) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin: 2rem 0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+        text-align: center !important;
     }
     
-
-    /* Unified Buttons */
-    .stButton button, .stDownloadButton button {
-        background: linear-gradient(135deg, #38BDF8, #2563EB) !important; /* Cyan gradient */
+    .main-title {
+        font-size: 3rem !important;
+        font-weight: 800 !important;
+        background: linear-gradient(90deg, #FFD700, #38BDF8) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        margin-bottom: 1rem !important;
+        letter-spacing: 1px !important;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem !important;
+        color: #38BDF8 !important;
+        font-weight: 300 !important;
+        margin-bottom: 1rem !important;
+        text-shadow: 0 0 10px rgba(56,189,248,0.7) !important;
+    }
+    
+    /* ========================================= */
+    /* CLIENT CONTAINERS - Enhanced Targeting */
+    /* ========================================= */
+    
+    .client-container,
+    div.client-container,
+    .stMarkdown .client-container {
+        background: rgba(30, 58, 138, 0.85) !important;
+        border: 1px solid rgba(56, 189, 248, 0.6) !important;
+        border-radius: 16px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+        box-shadow: 0 0 18px rgba(56, 189, 248, 0.35) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .client-container:hover {
+        box-shadow: 0 0 28px rgba(255, 215, 0, 0.7) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .client-container h3,
+    .client-container h2 {
+        color: #FFD700 !important;
+        font-weight: 700 !important;
+        text-shadow: 0 0 6px rgba(255, 215, 0, 0.6) !important;
+    }
+    
+    /* ========================================= */
+    /* BUTTONS - All Variants Covered */
+    /* ========================================= */
+    
+    button[kind="primary"],
+    button[kind="secondary"],
+    .stButton > button,
+    .stButton button,
+    .stDownloadButton > button,
+    .stDownloadButton button,
+    button[data-testid="baseButton-primary"],
+    button[data-testid="baseButton-secondary"],
+    .stFormSubmitButton > button {
+        background: linear-gradient(135deg, #38BDF8, #2563EB) !important;
         color: #fff !important;
         font-weight: 600 !important;
         border: 1px solid rgba(56, 189, 248, 0.6) !important;
@@ -228,224 +199,300 @@ def apply_custom_css():
         padding: 0.6rem 1.2rem !important;
         box-shadow: 0 0 12px rgba(56, 189, 248, 0.4) !important;
         transition: all 0.3s ease-in-out !important;
+        cursor: pointer !important;
     }
-    .stButton button:hover, .stDownloadButton button:hover {
-        background: linear-gradient(135deg, #FFD700, #FFA500) !important; /* Gold gradient */
+    
+    button[kind="primary"]:hover,
+    .stButton > button:hover,
+    .stDownloadButton > button:hover {
+        background: linear-gradient(135deg, #FFD700, #FFA500) !important;
         border-color: #FFD700 !important;
         box-shadow: 0 0 20px rgba(255, 215, 0, 0.7) !important;
         transform: translateY(-2px) !important;
     }
-    .stButton button:active, .stDownloadButton button:active {
-        transform: scale(0.97) !important;
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
-    }
-
-    /* Sidebar Radio & Checkbox Styling */
-    section[data-testid="stSidebar"] .stRadio label,
-    section[data-testid="stSidebar"] .stCheckbox label {
+    
+    /* ========================================= */
+    /* TEXT INPUTS - Universal Coverage */
+    /* ========================================= */
+    
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="number"],
+    textarea,
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea,
+    .stNumberInput > div > div > input,
+    div[data-baseweb="input"] > input,
+    div[data-baseweb="textarea"] > textarea {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(56, 189, 248, 0.5) !important;
+        border-radius: 8px !important;
         color: #f1f5f9 !important;
-        font-weight: 500 !important;
+        padding: 8px 12px !important;
+        transition: all 0.3s ease !important;
     }
-
-    /* Radio/Checkbox inputs */
-    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label,
-    section[data-testid="stSidebar"] .stCheckbox input[type="checkbox"] {
-        accent-color: #38BDF8 !important; /* Cyan checkmark */
+    
+    input:focus,
+    textarea:focus,
+    .stTextInput > div > div > input:focus,
+    .stTextArea > div > div > textarea:focus {
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.8) !important;
+        outline: none !important;
     }
-
-    /* Sidebar Slider Styling */
-    section[data-testid="stSidebar"] .stSlider [role="slider"] {
-        background: #38BDF8 !important;   /* cyan handle */
-        border: 2px solid #FFD700 !important; /* gold border */
-        box-shadow: 0 0 10px rgba(56,189,248,0.8) !important;
-    }
-
-    section[data-testid="stSidebar"] .stSlider [role="slider"]:hover {
-        background: #FFD700 !important;  /* gold handle on hover */
-        border-color: #38BDF8 !important;
-        box-shadow: 0 0 14px rgba(255,215,0,0.9) !important;
-    }
-
-    /* Slider track */
-    section[data-testid="stSidebar"] .stSlider [data-testid="stTickBar"] {
-        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
-        height: 6px !important;
-        border-radius: 3px;
-    }
-
-
-    /* Glow effect on hover */
-    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover,
-    section[data-testid="stSidebar"] .stCheckbox:hover {
-        text-shadow: 0 0 6px rgba(56,189,248,0.8) !important;
-        color: #FFD700 !important; /* Gold glow text */
-    }
-
-
-    /* Sidebar buttons */
-    section[data-testid="stSidebar"] button {
-        background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    
+    /* ========================================= */
+    /* SELECTBOX - Multiple Selector Strategy */
+    /* ========================================= */
+    
+    [data-baseweb="select"],
+    [data-baseweb="select"] > div,
+    div[role="combobox"],
+    .stSelectbox > div > div,
+    .stSelectbox [data-baseweb="select"] > div {
+        background: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(56, 189, 248, 0.5) !important;
+        box-shadow: 0 0 6px rgba(56, 189, 248, 0.3) !important;
+        border-radius: 10px !important;
         color: #f1f5f9 !important;
-        border: 1px solid rgba(56, 189, 248, 0.6);
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all 0.4s ease-in-out !important;
     }
-    section[data-testid="stSidebar"] button:hover {
-        background: linear-gradient(135deg, #FFD700, #facc15);
-        color: #1e3a8a !important;
-        box-shadow: 0 0 16px rgba(255, 215, 0, 0.8);
-        transform: translateY(-2px);
+    
+    [data-baseweb="select"]:hover > div,
+    div[role="combobox"]:hover {
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 18px rgba(255, 215, 0, 0.6) !important;
+        transform: scale(1.015) !important;
     }
-
-    /* Sidebar radio & checkbox labels */
-    section[data-testid="stSidebar"] label {
-        color: #f1f5f9 !important;
-        font-weight: 500;
+    
+    [data-baseweb="select"]:focus-within > div,
+    div[role="combobox"]:focus-within {
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.7) !important;
     }
-    section[data-testid="stSidebar"] div[role="radiogroup"] > div:hover label,
-    section[data-testid="stSidebar"] div[role="checkbox"] > div:hover label {
+    
+    /* Remove red error borders */
+    [data-baseweb="select"][aria-invalid="true"] > div {
+        border-color: rgba(56, 189, 248, 0.6) !important;
+    }
+    
+    /* ========================================= */
+    /* FILE UPLOADER - Deep Nesting Coverage */
+    /* ========================================= */
+    
+    .stFileUploader,
+    div[data-testid="stFileUploader"],
+    section[data-testid="stFileUploadDropzone"],
+    .stFileUploader > div,
+    div[data-testid="stFileUploader"] > div {
+        background: rgba(30, 58, 138, 0.85) !important;
+        border: 1px solid rgba(56, 189, 248, 0.6) !important;
+        border-radius: 12px !important;
+        padding: 1rem !important;
+        margin: 0.5rem 0 !important;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.25) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stFileUploader:hover,
+    div[data-testid="stFileUploader"]:hover {
+        box-shadow: 0 0 22px rgba(255, 215, 0, 0.7) !important;
+        border-color: #FFD700 !important;
+    }
+    
+    .stFileUploader label,
+    div[data-testid="stFileUploader"] label {
         color: #FFD700 !important;
-        text-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
+        font-weight: 600 !important;
     }
-
-    /* Sidebar sliders */
-    section[data-testid="stSidebar"] .stSlider [role="slider"] {
-        background: #FFD700 !important; /* gold handle */
-        border: 2px solid #38BDF8 !important; /* cyan border */
+    
+    /* ========================================= */
+    /* SIDEBAR - Complete Override */
+    /* ========================================= */
+    
+    section[data-testid="stSidebar"],
+    .css-1d391kg,
+    [data-testid="stSidebar"] > div {
+        background: linear-gradient(180deg, #0f172a, #1e3a8a) !important;
     }
-    section[data-testid="stSidebar"] .stSlider > div[role="presentation"] {
-        background: linear-gradient(90deg, #1e3a8a, #38BDF8) !important; /* track */
-    }
-
-    /* Sidebar Text Input Styling */
+    
+    /* Sidebar inputs */
     section[data-testid="stSidebar"] input[type="text"],
-    section[data-testid="stSidebar"] input[type="password"],
-    section[data-testid="stSidebar"] input[type="email"] {
+    section[data-testid="stSidebar"] input[type="password"] {
         background: rgba(255, 255, 255, 0.08) !important;
         border: 1px solid #38BDF8 !important;
         border-radius: 10px !important;
         color: #f1f5f9 !important;
         padding: 8px 10px !important;
-        font-weight: 500 !important;
-        transition: all 0.3s ease-in-out !important;
     }
-
-    /* Focused state (glow) */
-    section[data-testid="stSidebar"] input[type="text"]:focus,
-    section[data-testid="stSidebar"] input[type="password"]:focus,
-    section[data-testid="stSidebar"] input[type="email"]:focus {
-        outline: none !important;
+    
+    section[data-testid="stSidebar"] input:focus {
         border-color: #FFD700 !important;
         box-shadow: 0 0 10px rgba(255, 215, 0, 0.9) !important;
+        outline: none !important;
     }
-
-
-    /* Client dashboard section headers */
-    .client-container h3, 
-    .client-container h2 {
-        color: #FFD700 !important;   /* bright yellow */
-        text-shadow: 0 0 6px rgba(56, 189, 248, 0.6); /* cyan glow */
-        font-weight: 700;
-        margin-bottom: 0.75rem;
+    
+    /* Sidebar buttons */
+    section[data-testid="stSidebar"] button {
+        background: linear-gradient(135deg, #1e3a8a, #2563eb) !important;
+        color: #f1f5f9 !important;
+        border: 1px solid rgba(56, 189, 248, 0.6) !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
     }
-
-
-    /* Metric Cards */
-    .metric-card {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 1.5rem;
-        text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(12px);
-        transition: all 0.3s ease;
+    
+    section[data-testid="stSidebar"] button:hover {
+        background: linear-gradient(135deg, #FFD700, #facc15) !important;
+        color: #1e3a8a !important;
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.8) !important;
     }
-    .metric-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    
+    /* ========================================= */
+    /* RADIO BUTTONS - Sidebar Specific */
+    /* ========================================= */
+    
+    section[data-testid="stSidebar"] .stRadio > label {
+        color: #FFD700 !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
     }
-    .metric-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #FFD700;
-        margin-bottom: 0.5rem;
+    
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label,
+    section[data-testid="stSidebar"] div[role="radiogroup"] > label {
+        background: rgba(15, 23, 42, 0.4) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 12px !important;
+        padding: 0.6rem 1rem !important;
+        margin-bottom: 0.5rem !important;
+        color: #e5e7eb !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
     }
-    .metric-label {
-        font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.8);
-        font-weight: 400;
+    
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #fff !important;
+        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
     }
-
-    /* Hide default Streamlit clutter */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-
-    /* Tabs: text colors */
-    .stTabs [role="tab"]{
-      color:#FFD700 !important;         /* default = gold */
-      font-weight:600;
-      box-shadow:none !important;       /* nuke any built-in underline via shadow */
-      border-bottom:none !important;
+    
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label[data-checked="true"] {
+        background: linear-gradient(135deg, #FFD700, #facc15) !important;
+        color: #1E3A8A !important;
+        font-weight: 700 !important;
+        box-shadow: 0 0 20px rgba(255,215,0,0.8) !important;
     }
-    .stTabs [role="tab"]:hover{
-      color:#38BDF8 !important;         /* hover = cyan */
-      text-shadow:0 0 6px rgba(56,189,248,.7);
+    
+    /* ========================================= */
+    /* TABS - Enhanced Styling */
+    /* ========================================= */
+    
+    .stTabs [role="tab"],
+    button[role="tab"] {
+        color: #FFD700 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        padding: 0.6rem 1.2rem !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease !important;
+        border: none !important;
+        box-shadow: none !important;
     }
-    .stTabs [role="tab"][aria-selected="true"]{
-      color:#38BDF8 !important;         /* active = cyan text */
+    
+    .stTabs [role="tab"]:hover {
+        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
+        color: #fff !important;
+        box-shadow: 0 0 14px rgba(56,189,248,0.7) !important;
     }
-
-    /* Streamlit/BaseWeb moving highlight bar (the underline) */
-    .stTabs [data-baseweb="tab-highlight"]{
-      background-color:#FFD700 !important;   /* gold bar */
-      height:3px !important;
-      border-radius:3px !important;
+    
+    .stTabs [role="tab"][aria-selected="true"] {
+        background: linear-gradient(135deg, #FFD700, #facc15) !important;
+        color: #1E3A8A !important;
+        box-shadow: 0 0 24px rgba(255,215,0,0.9) !important;
+        transform: translateY(-2px) !important;
     }
-
-    /* Fallbacks for newer/older builds that don’t expose data-baseweb */
-    .stTabs [class*="tab-highlight"], 
-    .stTabs [class*="TabsHighlight"],
-    .stTabs div[role="tablist"] > div:last-child{
-      background-color:#FFD700 !important;
-      height:3px !important;
-      border-radius:3px !important;
+    
+    /* Hide tab underline */
+    .stTabs [data-baseweb="tab-highlight"],
+    .stTabs div[role="tablist"] > div:last-child {
+        background: transparent !important;
+        height: 0 !important;
     }
-
-    /* Remove any bottom border on the tab strip itself */
-    .stTabs [role="tablist"]{
-      border-bottom:none !important;
+    
+    .stTabs [role="tablist"] {
+        border-bottom: none !important;
     }
-
-
-    /* Hyperlinks inside app */
-    a {
-        color: #38BDF8 !important;   /* cyan links */
-        text-decoration: none !important;
-        font-weight: 500;
+    
+    /* ========================================= */
+    /* ALERTS - Icon Enhancement */
+    /* ========================================= */
+    
+    @keyframes pulseGlow {
+        0% { text-shadow: 0 0 6px rgba(56,189,248,0.6); }
+        50% { text-shadow: 0 0 16px rgba(255,215,0,0.9); }
+        100% { text-shadow: 0 0 6px rgba(56,189,248,0.6); }
     }
-    a:hover {
-        color: #FFD700 !important;   /* yellow on hover */
-        text-shadow: 0 0 8px rgba(255,215,0,0.7);
+    
+    .stAlert[data-baseweb="notification"] {
+        border-radius: 16px !important;
+        padding: 1rem 1.5rem !important;
+        margin: 1rem 0 !important;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        backdrop-filter: blur(12px) !important;
+        transition: all 0.3s ease !important;
     }
-
-    /* Scenario Analysis & General Table Styling */
-    .stTable table {
+    
+    .stAlert[kind="success"],
+    .stAlert[data-baseweb="notification"][kind="success"] {
+        background: rgba(255, 215, 0, 0.15) !important;
+        border-left: 4px solid #FFD700 !important;
+        color: #FFD700 !important;
+        box-shadow: 0 0 20px rgba(255,215,0,0.25) !important;
+    }
+    
+    .stAlert[kind="error"],
+    .stAlert[data-baseweb="notification"][kind="error"] {
+        background: rgba(220, 38, 38, 0.15) !important;
+        border-left: 4px solid #DC2626 !important;
+        color: #f87171 !important;
+        box-shadow: 0 0 20px rgba(220,38,38,0.25) !important;
+    }
+    
+    .stAlert[kind="warning"],
+    .stAlert[data-baseweb="notification"][kind="warning"] {
+        background: rgba(251, 191, 36, 0.15) !important;
+        border-left: 4px solid #fbbf24 !important;
+        color: #facc15 !important;
+        box-shadow: 0 0 20px rgba(251,191,36,0.25) !important;
+    }
+    
+    .stAlert[kind="info"],
+    .stAlert[data-baseweb="notification"][kind="info"] {
+        background: rgba(56, 189, 248, 0.15) !important;
+        border-left: 4px solid #38BDF8 !important;
+        color: #38BDF8 !important;
+        box-shadow: 0 0 20px rgba(56,189,248,0.25) !important;
+    }
+    
+    /* ========================================= */
+    /* TABLES - Enhanced Styling */
+    /* ========================================= */
+    
+    .stTable table,
+    table {
         border-collapse: collapse !important;
         width: 100% !important;
-        border: 1px solid rgba(56,189,248,0.4) !important; /* cyan border */
+        border: 1px solid rgba(56,189,248,0.4) !important;
         border-radius: 12px !important;
         overflow: hidden !important;
-        font-size: 0.95rem !important;
-        color: #f1f5f9 !important;
-        background: rgba(15, 23, 42, 0.6) !important; /* glassy dark navy */
+        background: rgba(15, 23, 42, 0.6) !important;
         backdrop-filter: blur(12px) !important;
         box-shadow: 0 0 18px rgba(56,189,248,0.3) !important;
     }
-
-    /* Table headers */
-    .stTable th {
+    
+    .stTable th,
+    table th {
         background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
         color: #FFD700 !important;
         text-align: center !important;
@@ -453,437 +500,85 @@ def apply_custom_css():
         font-weight: 700 !important;
         border-bottom: 2px solid #FFD700 !important;
     }
-
-    /* Table rows */
-    .stTable td {
+    
+    .stTable td,
+    table td {
         padding: 8px 10px !important;
         text-align: center !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+        color: #f1f5f9 !important;
     }
-
-    /* Alternate row background */
-    .stTable tr:nth-child(even) td {
+    
+    .stTable tr:nth-child(even) td,
+    table tr:nth-child(even) td {
         background: rgba(56,189,248,0.08) !important;
     }
-
-    /* Hover effect */
-    .stTable tr:hover td {
+    
+    .stTable tr:hover td,
+    table tr:hover td {
         background: rgba(255, 215, 0, 0.12) !important;
         color: #FFD700 !important;
-        transition: all 0.2s ease-in-out !important;
     }
-
-    /* Success box → Cyan glow */
-    .stAlert[data-baseweb="notification"][kind="success"] {
-        background: rgba(56,189,248,0.1) !important;
-        border: 1px solid #38BDF8 !important;
-        color: #38BDF8 !important;
-        border-radius: 12px !important;
-        box-shadow: 0 0 12px rgba(56,189,248,0.6) !important;
-        font-weight: 600 !important;
-    }
-
-    /* Error box → Gold warning */
-    .stAlert[data-baseweb="notification"][kind="error"] {
-        background: rgba(255, 215, 0, 0.1) !important;
-        border: 1px solid #FFD700 !important;
-        color: #FFD700 !important;
-        border-radius: 12px !important;
-        box-shadow: 0 0 12px rgba(255,215,0,0.6) !important;
-        font-weight: 600 !important;
-    }
-
-    /* Warning box → Yellow glow (softer than error) */
-    .stAlert[data-baseweb="notification"][kind="warning"] {
-        background: rgba(250, 204, 21, 0.1) !important;
-        border: 1px solid #facc15 !important;
-        color: #facc15 !important;
-        border-radius: 12px !important;
-        box-shadow: 0 0 12px rgba(250, 204, 21, 0.6) !important;
-        font-weight: 600 !important;
-    }
-
-    /* Info box → Neutral cyan */
-    .stAlert[data-baseweb="notification"][kind="info"] {
-        background: rgba(15, 23, 42, 0.6) !important; /* dark navy glass */
-        border: 1px solid #38BDF8 !important;
-        color: #38BDF8 !important;
-        border-radius: 12px !important;
-        box-shadow: 0 0 12px rgba(56,189,248,0.4) !important;
-        font-weight: 500 !important;
-    }
-
-    /* Keyframes for glowing pulse */
-    @keyframes pulseGlow {
-        0% { text-shadow: 0 0 6px rgba(56,189,248,0.6); }
-        50% { text-shadow: 0 0 16px rgba(255,215,0,0.9); }
-        100% { text-shadow: 0 0 6px rgba(56,189,248,0.6); }
-    }
-
-    /* 🔹 Success → 🚀 (bright yellow background) */
-    .stAlert[data-baseweb="notification"][kind="success"] {
-        background: rgba(255, 215, 0, 0.15) !important; /* soft gold */
-        border-left: 4px solid #FFD700 !important;
-        border-radius: 10px !important;
-        color: #FFD700 !important;
-    }
-    .stAlert[data-baseweb="notification"][kind="success"] [data-testid="stMarkdownContainer"] p:first-child:before {
-        content: "🚀 " !important;
-        font-size: 1.2rem;
-        margin-right: 6px;
-        animation: pulseGlow 2s infinite ease-in-out;
-    }
-
-    /* 🔹 Error → ❌ (deep red background) */
-    .stAlert[data-baseweb="notification"][kind="error"] {
-        background: rgba(220, 38, 38, 0.15) !important; /* soft red */
-        border-left: 4px solid #DC2626 !important;
-        border-radius: 10px !important;
-        color: #f87171 !important;
-    }
-    .stAlert[data-baseweb="notification"][kind="error"] [data-testid="stMarkdownContainer"] p:first-child:before {
-        content: "❌ " !important;
-        font-size: 1.2rem;
-        margin-right: 6px;
-        animation: pulseGlow 2s infinite ease-in-out;
-    }
-
-    /* 🔹 Warning → ⚡ (orange-gold background) */
-    .stAlert[data-baseweb="notification"][kind="warning"] {
-        background: rgba(251, 191, 36, 0.15) !important; /* amber */
-        border-left: 4px solid #fbbf24 !important;
-        border-radius: 10px !important;
-        color: #facc15 !important;
-    }
-    .stAlert[data-baseweb="notification"][kind="warning"] [data-testid="stMarkdownContainer"] p:first-child:before {
-        content: "⚡ " !important;
-        font-size: 1.2rem;
-        margin-right: 6px;
-        animation: pulseGlow 2s infinite ease-in-out;
-    }
-
-    /* 🔹 Info → 🔑 (cyan background) */
-    .stAlert[data-baseweb="notification"][kind="info"] {
-        background: rgba(56, 189, 248, 0.15) !important; /* cyan */
-        border-left: 4px solid #38BDF8 !important;
-        border-radius: 10px !important;
-        color: #38BDF8 !important;
-    }
-    .stAlert[data-baseweb="notification"][kind="info"] [data-testid="stMarkdownContainer"] p:first-child:before {
-        content: "🔑 " !important;
-        font-size: 1.2rem;
-        margin-right: 6px;
-        animation: pulseGlow 2s infinite ease-in-out;
-    }
-
-    /* Unified alert card style */
-    .stAlert[data-baseweb="notification"] {
-        width: 100% !important;
-        padding: 1rem 1.5rem !important;
-        margin: 1rem 0 !important;
-        border-radius: 16px !important;
-        font-size: 0.95rem !important;
-        font-weight: 500 !important;
-        box-shadow: 0 0 20px rgba(56,189,248,0.25) !important;
-        backdrop-filter: blur(12px) !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-    /* On hover, make alerts glow brighter */
-    .stAlert[data-baseweb="notification"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0 28px rgba(255, 215, 0, 0.5) !important;
-    }
-
-    /* Inner text spacing */
-    .stAlert [data-testid="stMarkdownContainer"] {
-        line-height: 1.6 !important;
-    }
-
-    /* Buttons inside alert boxes */
-    .stAlert button {
-        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
-        color: #fff !important;
-        font-weight: 600 !important;
-        border: none !important;
-        border-radius: 10px !important;
-        padding: 0.5rem 1rem !important;
-        margin-top: 0.5rem !important;
-        box-shadow: 0 0 12px rgba(56,189,248,0.6) !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-    /* Hover effect */
-    .stAlert button:hover {
-        background: linear-gradient(135deg, #FFD700, #facc15) !important;
-        color: #1E3A8A !important;
-        box-shadow: 0 0 20px rgba(255,215,0,0.8) !important;
-        transform: translateY(-2px) scale(1.02);
-    }
-
-    /* Global Streamlit buttons */
-    .stButton > button {
-        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
-        color: #fff !important;
-        font-weight: 700 !important;
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 0.6rem 1.2rem !important;
-        margin: 0.5rem 0 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
-        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
-        transition: all 0.25s ease-in-out !important;
-    }
-
-    /* Hover effect */
-    .stButton > button:hover {
-        background: linear-gradient(135deg, #FFD700, #facc15) !important;
-        color: #1E3A8A !important;
-        box-shadow: 0 0 24px rgba(255,215,0,0.9) !important;
-        transform: translateY(-2px) scale(1.03);
-    }
-
-    /* Disabled button state */
-    .stButton > button:disabled {
-        background: rgba(148,163,184,0.3) !important;
-        color: rgba(241,245,249,0.6) !important;
-        box-shadow: none !important;
-        cursor: not-allowed !important;
-    }
-
-    /* Tabs with cyan/gold glow */
-    .stTabs [role="tab"] {
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
-        padding: 0.6rem 1.2rem !important;
-        border-radius: 10px !important;
-        transition: all 0.3s ease-in-out !important;
-        color: #FFD700 !important; /* default gold */
-    }
-
-    /* Hover effect */
-    .stTabs [role="tab"]:hover {
-        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
-        color: #fff !important;
-        box-shadow: 0 0 14px rgba(56,189,248,0.7) !important;
-    }
-
-    /* Active tab */
-    .stTabs [role="tab"][aria-selected="true"] {
-        background: linear-gradient(135deg, #FFD700, #facc15) !important;
-        color: #1E3A8A !important;
-        box-shadow: 0 0 24px rgba(255,215,0,0.9) !important;
-        transform: translateY(-2px);
-    }
-
-    /* Underline highlight bar → hidden (we use glow instead) */
-    .stTabs [data-baseweb="tab-highlight"] {
-        background: transparent !important;
-    }
-    /* Tabs with cyan/gold glow */
-    .stTabs [role="tab"] {
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
-        padding: 0.6rem 1.2rem !important;
-        border-radius: 10px !important;
-        transition: all 0.3s ease-in-out !important;
-        color: #FFD700 !important; /* default gold */
-    }
-
-    /* Hover effect */
-    .stTabs [role="tab"]:hover {
-        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
-        color: #fff !important;
-        box-shadow: 0 0 14px rgba(56,189,248,0.7) !important;
-    }
-
-    /* Active tab */
-    .stTabs [role="tab"][aria-selected="true"] {
-        background: linear-gradient(135deg, #FFD700, #facc15) !important;
-        color: #1E3A8A !important;
-        box-shadow: 0 0 24px rgba(255,215,0,0.9) !important;
-        transform: translateY(-2px);
-    }
-
-    /* Underline highlight bar → hidden (we use glow instead) */
-    .stTabs [data-baseweb="tab-highlight"] {
-        background: transparent !important;
-    }
-
-
-    /* Hide default Streamlit clutter */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-
-    /* Download Button Styling */
-    .stDownloadButton button {
-        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
-        color: #f1f5f9 !important;
-        border: 2px solid #FFD700 !important;
-        border-radius: 12px !important;
-        font-weight: 600 !important;
-        padding: 10px 18px !important;
-        transition: all 0.3s ease-in-out !important;
-        box-shadow: 0 0 10px rgba(56,189,248,0.6) !important;
-    }
-
-    /* Sidebar Radio Buttons - PyStatR+ Glow */
-    [data-testid="stSidebar"] .stRadio > label {
-        font-weight: 600 !important;
-        text-transform: uppercase !important;
-        color: #FFD700 !important; /* gold text */
-        margin-bottom: 0.5rem !important;
-    }
-
-    /* ========================= */
-    /* ✅ Checkboxes - PyStatR+ Glow */
-    /* ========================= */
-    [data-testid="stSidebar"] .stCheckbox label {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        background: rgba(15, 23, 42, 0.4) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        border-radius: 10px !important;
-        padding: 0.6rem 1rem !important;
-        margin-bottom: 0.5rem !important;
-        font-weight: 500 !important;
-        color: #e5e7eb !important;
-        transition: all 0.3s ease-in-out !important;
-        cursor: pointer;
-    }
-
-    [data-testid="stSidebar"] .stCheckbox label:hover {
-        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
-        color: #fff !important;
-        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
-    }
-
-    [data-testid="stSidebar"] .stCheckbox input:checked + div {
-        background: linear-gradient(135deg, #FFD700, #facc15) !important;
-        border-radius: 6px !important;
-        box-shadow: 0 0 20px rgba(255,215,0,0.8) !important;
-    }
-
-    /* ========================= */
-    /* 🎚️ Sliders - PyStatR+ Glow */
-    /* ========================= */
-    [data-testid="stSidebar"] .stSlider > div {
-        padding: 0.8rem !important;
-        border-radius: 12px !important;
-        background: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-    }
-
-    [data-testid="stSidebar"] .stSlider .st-bb {
-        background: linear-gradient(90deg, #38BDF8, #FFD700) !important;
-        height: 6px !important;
-        border-radius: 4px !important;
-        box-shadow: 0 0 10px rgba(56,189,248,0.6), 0 0 15px rgba(255,215,0,0.7) !important;
-    }
-
-    [data-testid="stSidebar"] .stSlider .st-at {
-        background: #38BDF8 !important; /* unfilled portion */
-        opacity: 0.3 !important;
-    }
-
-    [data-testid="stSidebar"] .stSlider .st-af {
-        background: #FFD700 !important; /* handle active */
-        border: 2px solid #1E3A8A !important;
-        box-shadow: 0 0 10px rgba(255,215,0,0.9) !important;
-    }
-
     
-    /* Radio options */
-    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {
-        background: rgba(15, 23, 42, 0.4) !important; /* dark glass */
+    /* ========================================= */
+    /* METRIC CARDS */
+    /* ========================================= */
+    
+    .metric-card {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 16px !important;
+        padding: 1.5rem !important;
+        text-align: center !important;
         border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        border-radius: 12px !important;
-        padding: 0.6rem 1rem !important;
-        margin-bottom: 0.5rem !important;
-        font-weight: 500 !important;
-        color: #e5e7eb !important; /* light gray text */
-        transition: all 0.3s ease-in-out !important;
-        cursor: pointer;
+        backdrop-filter: blur(12px) !important;
+        transition: all 0.3s ease !important;
     }
-
-    /* Hover effect */
-    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {
-        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
-        color: #fff !important;
-        box-shadow: 0 0 14px rgba(56,189,248,0.6) !important;
+    
+    .metric-card:hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.4) !important;
     }
-
-    /* Active / Selected */
-    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] label[data-checked="true"] {
-        background: linear-gradient(135deg, #FFD700, #facc15) !important;
-        color: #1E3A8A !important;
-        box-shadow: 0 0 20px rgba(255,215,0,0.8) !important;
+    
+    .metric-value {
+        font-size: 2rem !important;
         font-weight: 700 !important;
-        transform: translateY(-1px);
+        color: #FFD700 !important;
+        margin-bottom: 0.5rem !important;
     }
-
-
-    /* Hover effect */
-    .stDownloadButton button:hover {
-        background: linear-gradient(135deg, #FFD700, #38BDF8) !important;
-        color: #0f172a !important;  /* dark ink text for contrast */
-        border-color: #38BDF8 !important;
-        box-shadow: 0 0 18px rgba(255,215,0,0.9) !important;
-        transform: translateY(-2px) scale(1.03);
+    
+    .metric-label {
+        font-size: 0.95rem !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-weight: 400 !important;
     }
-
-    /* 🌌 PyStatR+ Breathing Glow for Selectboxes */
-    @keyframes breathingGlow {
-        0% {
-            box-shadow: 0 0 4px rgba(56,189,248,0.4), 0 0 8px rgba(56,189,248,0.2);
-            border-color: rgba(56,189,248,0.6);
-        }
-        50% {
-            box-shadow: 0 0 18px rgba(255,215,0,0.8), 0 0 32px rgba(56,189,248,0.5);
-            border-color: #FFD700;
-        }
-        100% {
-            box-shadow: 0 0 4px rgba(56,189,248,0.4), 0 0 8px rgba(56,189,248,0.2);
-            border-color: rgba(56,189,248,0.6);
-        }
+    
+    /* ========================================= */
+    /* HIDE STREAMLIT BRANDING */
+    /* ========================================= */
+    
+    #MainMenu {visibility: hidden !important;}
+    footer {visibility: hidden !important;}
+    header {visibility: hidden !important;}
+    .viewerBadge_container__1QSob {display: none !important;}
+    
+    /* ========================================= */
+    /* HYPERLINKS */
+    /* ========================================= */
+    
+    a, a:link, a:visited {
+        color: #38BDF8 !important;
+        text-decoration: none !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
     }
-
-    /* Default selectbox style — calm cyan base */
-    [data-baseweb="select"] > div {
-        border: 1px solid rgba(56,189,248,0.5) !important;
-        box-shadow: 0 0 6px rgba(56,189,248,0.3) !important;
-        border-radius: 10px !important;
-        transition: all 0.4s ease-in-out !important;
+    
+    a:hover {
+        color: #FFD700 !important;
+        text-shadow: 0 0 8px rgba(255,215,0,0.7) !important;
     }
-
-    /* Hover — begin the breathing glow */
-    [data-baseweb="select"] > div:hover {
-        animation: breathingGlow 4s ease-in-out infinite !important;
-        transform: scale(1.015);
-    }
-
-    /* Focus — stronger, golden confidence glow */
-    [data-baseweb="select"] > div:focus-within {
-        border-color: #FFD700 !important;
-        box-shadow: 0 0 20px rgba(255,215,0,0.7), 0 0 30px rgba(56,189,248,0.5) !important;
-        animation: breathingGlow 2.5s ease-in-out infinite !important;
-    }
-
-    /* Remove red borders entirely */
-    [data-baseweb="select"] > div[aria-invalid="true"] {
-        border-color: rgba(56,189,248,0.6) !important;
-        box-shadow: 0 0 8px rgba(56,189,248,0.3) !important;
-    }
-
-
+    
     </style>
     """, unsafe_allow_html=True)
-
 
 def create_metric_cards():
     col1, col2, col3, col4 = st.columns(4)
@@ -939,26 +634,18 @@ def add_images_to_story(story, images):
 def add_watermark(canvas_obj, doc, theme="Light", logo_path=None):
     canvas_obj.saveState()
     
-    # Faint color for text fallback
     if theme == "Dark":
-        wm_color = colors.Color(1, 1, 1, alpha=0.08)  # faint white
+        wm_color = colors.Color(1, 1, 1, alpha=0.08)
     else:
-        wm_color = colors.Color(0.1, 0.2, 0.5, alpha=0.08)  # faint navy
+        wm_color = colors.Color(0.1, 0.2, 0.5, alpha=0.08)
     
     if logo_path and os.path.exists(logo_path):
-        # Semi-transparent logo watermark
         from reportlab.lib.utils import ImageReader
         logo = ImageReader(logo_path)
         canvas_obj.translate(150, 250)
         canvas_obj.rotate(30)
-        canvas_obj.drawImage(
-            logo,
-            0, 0,
-            width=300, height=300,
-            mask='auto'
-        )
+        canvas_obj.drawImage(logo, 0, 0, width=300, height=300, mask='auto')
     else:
-        # Fallback text watermark
         canvas_obj.setFont("Helvetica-Bold", 60)
         canvas_obj.setFillColor(wm_color)
         canvas_obj.translate(300, 400)
@@ -967,7 +654,6 @@ def add_watermark(canvas_obj, doc, theme="Light", logo_path=None):
     
     canvas_obj.restoreState()
 
-
 def generate_pdf(filename, theme="Light", **kwargs):
     temp_files = []
     try:
@@ -975,19 +661,17 @@ def generate_pdf(filename, theme="Light", **kwargs):
         story = []
         styles = getSampleStyleSheet()
         
-        # Futuristic Theme Colors
         if theme == "Dark":
             text_color_main = colors.HexColor("#F8FAFC")
-            title_color = colors.HexColor("#FFD700")       # gold
-            heading_color = colors.HexColor("#38BDF8")     # cyan
+            title_color = colors.HexColor("#FFD700")
+            heading_color = colors.HexColor("#38BDF8")
             accent_color = colors.HexColor("#FFD700")
-        else:  # Light theme
+        else:
             text_color_main = colors.HexColor("#1A365D")
-            title_color = colors.HexColor("#1E3A8A")       # deep blue
-            heading_color = colors.HexColor("#38BDF8")     # cyan
-            accent_color = colors.HexColor("#FFD700")      # gold
+            title_color = colors.HexColor("#1E3A8A")
+            heading_color = colors.HexColor("#38BDF8")
+            accent_color = colors.HexColor("#FFD700")
         
-        # Title Style
         title_style = ParagraphStyle(
             "CustomTitle",
             parent=styles['Title'],
@@ -999,7 +683,6 @@ def generate_pdf(filename, theme="Light", **kwargs):
             leading=32
         )
         
-        # Section Heading Style
         heading_style = ParagraphStyle(
             "CustomHeading",
             parent=styles['Heading2'],
@@ -1014,7 +697,6 @@ def generate_pdf(filename, theme="Light", **kwargs):
             leading=20
         )
         
-        # Body Text
         body_style = ParagraphStyle(
             "CustomBody",
             parent=styles['Normal'],
@@ -1027,7 +709,6 @@ def generate_pdf(filename, theme="Light", **kwargs):
             leading=16
         )
         
-        # --- Cover Page ---
         story.append(Spacer(1, 80))
         
         if kwargs.get("logo"):
@@ -1056,7 +737,6 @@ def generate_pdf(filename, theme="Light", **kwargs):
         
         story.append(Spacer(1, 60))
         
-        # Divider + Tagline Footer on Cover
         divider_color = colors.HexColor("#38BDF8") if theme == "Light" else colors.HexColor("#FFD700")
         divider = Table(
             [[""]],
@@ -1070,7 +750,7 @@ def generate_pdf(filename, theme="Light", **kwargs):
         story.append(divider)
         story.append(Spacer(1, 20))
         footer_text = Paragraph(
-            "🚀 Elevating Expertise into Professional Impact — Powered by PyStatR+",
+            "Elevating Expertise into Professional Impact — Powered by PyStatR+",
             ParagraphStyle(
                 "Footer",
                 fontName="Helvetica-Oblique",
@@ -1083,7 +763,6 @@ def generate_pdf(filename, theme="Light", **kwargs):
         story.append(footer_text)
         story.append(PageBreak())
         
-        # --- Content Sections ---
         sections = [
             ("Executive Summary", "exec_summary"),
             ("Strategic Opportunities", "opportunities"),
@@ -1126,7 +805,6 @@ def generate_pdf(filename, theme="Light", **kwargs):
                 else:
                     story.append(Paragraph(kwargs[key], body_style))
                 
-                # Section Images
                 image_key = f"{key}_images"
                 if kwargs.get(image_key):
                     img_temp_files = add_images_to_story(story, kwargs[image_key])
@@ -1134,25 +812,13 @@ def generate_pdf(filename, theme="Light", **kwargs):
                 
                 story.append(Spacer(1, 20))
         
-        # --- Closing Page ---
         story.append(PageBreak())
-        
-        closing_divider_color = colors.HexColor("#38BDF8") if theme == "Light" else colors.HexColor("#FFD700")
-        closing_divider = Table(
-            [[""]],
-            colWidths=[450],
-            rowHeights=[6],
-            style=TableStyle([
-                ("BACKGROUND", (0, 0), (-1, -1), closing_divider_color),
-                ("LINEBELOW", (0, 0), (-1, -1), 0, closing_divider_color),
-            ])
-        )
         story.append(Spacer(1, 200))
-        story.append(closing_divider)
+        story.append(divider)
         story.append(Spacer(1, 30))
         
         closing_text = Paragraph(
-            "🙏 Thank you for reviewing this portfolio.<br/>For inquiries, collaborations, or consulting engagements, please contact your PyStatR+ consultant.",
+            "Thank you for reviewing this portfolio.<br/>For inquiries, collaborations, or consulting engagements, please contact your PyStatR+ consultant.",
             ParagraphStyle(
                 "ClosingText",
                 fontName="Helvetica",
@@ -1167,19 +833,18 @@ def generate_pdf(filename, theme="Light", **kwargs):
         story.append(Spacer(1, 40))
         
         closing_footer = Paragraph(
-            "🚀 Elevating Expertise into Professional Impact — Powered by PyStatR+",
+            "Elevating Expertise into Professional Impact — Powered by PyStatR+",
             ParagraphStyle(
                 "ClosingFooter",
                 fontName="Helvetica-Oblique",
                 fontSize=10,
-                textColor=closing_divider_color,
+                textColor=divider_color,
                 alignment=TA_CENTER,
                 spaceBefore=20
             )
         )
         story.append(closing_footer)
         
-        # --- Prepare watermark logo (if available) ---
         wm_logo_path = None
         if kwargs.get("logo"):
             try:
@@ -1191,7 +856,6 @@ def generate_pdf(filename, theme="Light", **kwargs):
             except:
                 pass
         
-        # --- Build PDF with watermark ---
         doc.build(
             story,
             onFirstPage=lambda c, d: add_watermark(c, d, theme, wm_logo_path),
@@ -1210,109 +874,130 @@ def generate_pdf(filename, theme="Light", **kwargs):
             except:
                 pass
 
+def render_password_panel(admin_settings):
+    st.sidebar.markdown("### Password Management")
 
-def main():
-    st.set_page_config(
-    page_title="AI Consulting Portfolio Builder",
-    page_icon="docs/screenshots/logo.png",  # Path to your PyStatR+ logo
-    layout="wide",
-    initial_sidebar_state="expanded"
-    )
+    if "password_overrides" not in st.session_state:
+        st.session_state.password_overrides = {}
 
-    
-    apply_custom_css()
-    
-    # Load admin settings
-    admin_settings = load_admin_settings()
+    if "password_overrides" in admin_settings:
+        for user, info in admin_settings["password_overrides"].items():
+            try:
+                ts = datetime.fromisoformat(info["timestamp"])
+                st.session_state.password_overrides[user] = {
+                    "password": info["password"],
+                    "timestamp": ts
+                }
+            except:
+                continue
 
-    def cleanup_expired_overrides(admin_settings):
-        """Remove expired overrides from session_state and admin_settings.json"""
-        if "password_overrides" not in st.session_state:
-            return
+    users = list(st.secrets["users"].keys())
+    users = [u for u in users if u.lower() != "alierwai"]
 
-        expiry_hours = admin_settings.get("override_expiry_hours", 24)
-        max_age = expiry_hours * 3600
+    reset_user = st.sidebar.selectbox("Select user", users)
+    new_pass = st.sidebar.text_input("New password", type="password")
+
+    if st.sidebar.button("Update Password"):
+        st.session_state.password_overrides[reset_user] = {
+            "password": new_pass,
+            "timestamp": datetime.now()
+        }
+        admin_settings["password_overrides"] = {
+            k: {"password": v["password"], "timestamp": v["timestamp"].isoformat()}
+            for k, v in st.session_state.password_overrides.items()
+        }
+        save_admin_settings(admin_settings)
+        st.sidebar.success(f"Password for {reset_user} updated")
+
+    if st.sidebar.button("Reset to Default Passwords"):
+        st.session_state.password_overrides.clear()
+        admin_settings.pop("password_overrides", None)
+        save_admin_settings(admin_settings)
+        st.sidebar.info("All overrides cleared")
+
+    expiry_hours = admin_settings.get("override_expiry_hours", 24)
+    st.sidebar.markdown("#### Override Expiry")
+    expiry_hours = st.sidebar.slider("Expiry Time (hours)", 1, 72, expiry_hours, 1)
+
+    if expiry_hours != admin_settings.get("override_expiry_hours", 24):
+        admin_settings["override_expiry_hours"] = expiry_hours
+        save_admin_settings(admin_settings)
+        st.sidebar.success(f"Override expiry updated to {expiry_hours} hours")
+
+    MAX_AGE = expiry_hours * 3600
+
+    if st.session_state.password_overrides:
+        st.sidebar.markdown("#### Active Overrides")
         now = datetime.now()
-
-        expired_users = []
-        for user, entry in list(st.session_state.password_overrides.items()):
-            age = (now - entry["timestamp"]).total_seconds()
-            if age > max_age:
-                expired_users.append(user)
+        for user, info in list(st.session_state.password_overrides.items()):
+            age = (now - info["timestamp"]).total_seconds()
+            remaining = MAX_AGE - age
+            if remaining > 0:
+                hrs = int(remaining // 3600)
+                mins = int((remaining % 3600) // 60)
+                st.sidebar.write(
+                    f"**{user}** — expires in {hrs}h {mins}m "
+                    f"(set {info['timestamp'].strftime('%Y-%m-%d %H:%M')})"
+                )
+            else:
                 del st.session_state.password_overrides[user]
                 if "password_overrides" in admin_settings and user in admin_settings["password_overrides"]:
                     del admin_settings["password_overrides"][user]
+                    save_admin_settings(admin_settings)
+                st.sidebar.warning(f"Override for {user} expired and was reset")
 
-        if expired_users:
-            save_admin_settings(admin_settings)
-            st.sidebar.warning(
-                f"⚠️ Expired overrides removed: {', '.join(expired_users)}"
-            )
-    # Clean up expired overrides immediately at startup
-    cleanup_expired_overrides(admin_settings)
-
-    # Check session timeout
+def main():
+    st.set_page_config(
+        page_title="AI Consulting Portfolio Builder",
+        page_icon="📊",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+    
+    apply_custom_css()
+    
+    admin_settings = load_admin_settings()
     check_session_timeout()
     
-    # Authentication state
     if 'authenticated' not in st.session_state:
         st.session_state.authenticated = False
     
     if not st.session_state.authenticated:
         st.markdown("""
         <div class="main-header">
-            <h1 class="main-title">🔐 Portfolio Builder Login</h1>
+            <h1 class="main-title">Portfolio Builder Login</h1>
             <p class="subtitle">Access your professional consulting portfolio tools</p>
         </div>
         """, unsafe_allow_html=True)
         
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
             username = st.text_input("Username")
             password = st.text_input("Password", type="password")
             
-            if st.button("🔐 Secure Access", use_container_width=True):
+            if st.button("Secure Access", use_container_width=True):
                 user = check_credentials(username, password)
                 if user:
                     st.session_state.authenticated = True
                     st.session_state.username = username
                     st.session_state.user_role = user["role"]
                     st.session_state.user_name = user["name"]
-                    st.success("Login successful!")
+                    st.success("Login successful")
                     st.rerun()
                 else:
                     st.error("Invalid credentials")
-            st.markdown('</div>', unsafe_allow_html=True)
         return
     
-    # Logout button
-    if st.sidebar.button("🚪 End Session"):
+    if st.sidebar.button("End Session"):
         st.session_state.clear()
         st.rerun()
-
-    st.sidebar.markdown(
-        f"""
-        <div style="text-align:center; margin-bottom:1rem;">
-            <img src="https://raw.githubusercontent.com/PyStatRPlus/pystatrplus-ai-portfolio/main/docs/screenshots/logo.png" 
-                 alt="PyStatR+ Logo" width="120" style="border-radius:12px;" />
-        </div>
-        """,
-        unsafe_allow_html=True
-        )
-
     
-    # User info
-    st.sidebar.success(f"👋 Welcome **{st.session_state.user_name}** ({st.session_state.user_role.title()})")
+    st.sidebar.success(f"Welcome **{st.session_state.user_name}** ({st.session_state.user_role.title()})")
     
-    # Admin Dashboard
     if st.session_state.user_role == "admin":
-        st.sidebar.markdown("### 🛠️ Admin Controls")
-        
-        # ✅ Unified password panel (moved out of main)
+        st.sidebar.markdown("### Admin Controls")
         render_password_panel(admin_settings)
 
-        # Global client settings
         client_pdf_theme = st.sidebar.radio(
             "Default PDF Theme for All Clients",
             ["Light", "Dark"],
@@ -1322,51 +1007,45 @@ def main():
         if client_pdf_theme != admin_settings["client_pdf_theme"]:
             admin_settings["client_pdf_theme"] = client_pdf_theme
             save_admin_settings(admin_settings)
-            st.sidebar.success(f"✅ Client theme updated to **{client_pdf_theme}**")
+            st.sidebar.success(f"Client theme updated to **{client_pdf_theme}**")
         
-        # Load presets
         presets = load_presets()
         
-        # Header
         st.markdown("""
         <div class="main-header">
-            <h1 class="main-title">🚀 AI Consulting Portfolio Builder</h1>
+            <h1 class="main-title">AI Consulting Portfolio Builder</h1>
             <p class="subtitle">Turn your expertise into client-ready, professional portfolios powered by AI</p>
         </div>
         """, unsafe_allow_html=True)
         
         create_metric_cards()
         
-        # Main tabs
-        # Tabs
         tab1, tab2, tab3, tab4 = st.tabs([
-            "✨ Brand Identity Workshop",
-            "📝 Strategic Content Composer",
-            "👁️ Interactive Portfolio Preview",
-            "📄 Professional Export Hub"
+            "Brand Identity Workshop",
+            "Strategic Content Composer",
+            "Interactive Portfolio Preview",
+            "Professional Export Hub"
         ])
         
-        # Initialize session state
         if 'portfolio_data' not in st.session_state:
             st.session_state.portfolio_data = {}
         
         with tab1:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.markdown("## ✨ Branding Studio")
+            st.markdown('<div class="client-container">', unsafe_allow_html=True)
+            st.markdown("## Branding Studio")
             
-            # Preset management
             col1, col2 = st.columns([2, 1])
             
             with col1:
                 preset_names = list(presets.keys())
                 selected_preset = st.selectbox(
-                    "🎯 Brand Preset Library",
+                    "Brand Preset Library",
                     ["Create New"] + preset_names
                 )
             
             with col2:
                 if selected_preset != "Create New" and selected_preset in presets:
-                    st.success(f"✨ Active: {selected_preset}")
+                    st.success(f"Active: {selected_preset}")
                     branding = presets[selected_preset]
                 else:
                     branding = {
@@ -1377,23 +1056,22 @@ def main():
                         "pdf_theme": "Light"
                     }
             
-            # Branding controls
             col1, col2 = st.columns(2)
             
             with col1:
                 name_input = st.text_input(
-                    "👤 Professional Identity",
+                    "Professional Identity",
                     value=branding.get("name", "")
                 )
                 
                 brand_color = st.color_picker(
-                    "🎨 Signature Brand Color",
+                    "Signature Brand Color",
                     value=branding.get("brand_color", "#1E3A8A")
                 )
             
             with col2:
                 font_choice = st.selectbox(
-                    "🔤 Typography",
+                    "Typography",
                     ["Helvetica", "Times-Roman", "Courier"],
                     index=["Helvetica", "Times-Roman", "Courier"].index(
                         branding.get("font_choice", "Helvetica")
@@ -1401,14 +1079,13 @@ def main():
                 )
                 
                 pdf_theme = st.radio(
-                    "🌓 Document Theme",
+                    "Document Theme",
                     ["Light", "Dark"],
                     index=0 if branding.get("pdf_theme", "Light") == "Light" else 1,
                     horizontal=True
                 )
             
-            # Logo upload
-            st.markdown("### 🏆 Professional Logo")
+            st.markdown("### Professional Logo")
             cover_logo = None
             logo_upload = st.file_uploader(
                 "Upload Your Brand Mark",
@@ -1422,8 +1099,7 @@ def main():
                 cover_logo = branding.get("logo")
                 st.image(base64.b64decode(cover_logo), width=200)
             
-            # Preset management
-            st.markdown("### 💎 Brand Preset Manager")
+            st.markdown("### Brand Preset Manager")
             preset_name_input = st.text_input(
                 "Preset Collection Name",
                 value=selected_preset if selected_preset != "Create New" else ""
@@ -1432,7 +1108,7 @@ def main():
             col1, col2, col3 = st.columns(3)
             
             with col1:
-                if st.button("💎 Save Branding Profile", use_container_width=True):
+                if st.button("Save Branding Profile", use_container_width=True):
                     if preset_name_input.strip():
                         presets[preset_name_input] = {
                             "name": name_input,
@@ -1442,24 +1118,23 @@ def main():
                             "pdf_theme": pdf_theme
                         }
                         save_presets(presets)
-                        st.success(f"✨ Brand preset '{preset_name_input}' saved!")
+                        st.success(f"Brand preset '{preset_name_input}' saved")
                         st.rerun()
                     else:
-                        st.error("⚠️ Please enter a preset name")
+                        st.error("Please enter a preset name")
             
             with col2:
-                if st.button("🗑️ Delete Branding Profile", use_container_width=True):
+                if st.button("Delete Branding Profile", use_container_width=True):
                     if selected_preset in presets:
                         del presets[selected_preset]
                         save_presets(presets)
-                        st.success(f"🗑️ Preset '{selected_preset}' removed")
+                        st.success(f"Preset '{selected_preset}' removed")
                         st.rerun()
             
             with col3:
-                if st.button("🔄 Reload Preset Library", use_container_width=True):
+                if st.button("Reload Preset Library", use_container_width=True):
                     st.rerun()
             
-            # Store branding data
             st.session_state.portfolio_data.update({
                 "name": name_input,
                 "brand_color": brand_color,
@@ -1471,30 +1146,28 @@ def main():
             st.markdown('</div>', unsafe_allow_html=True)
         
         with tab2:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.markdown("## 📝 Content Builder")
+            st.markdown('<div class="client-container">', unsafe_allow_html=True)
+            st.markdown("## Content Builder")
             
-            # Project overview
-            st.markdown("### 🎯 Project Overview")
+            st.markdown("### Project Overview")
             col1, col2 = st.columns(2)
             
             with col1:
                 project_title = st.text_input(
-                    "🏆 Portfolio Title",
+                    "Portfolio Title",
                     value="Generative AI Consulting Training Program"
                 )
             
             with col2:
-                date = st.date_input("📅 Project Date", datetime.today())
+                date = st.date_input("Project Date", datetime.today())
             
-            # Content sections
             sections = [
-                ("🎯 Executive Summary", "exec_summary"),
-                ("🚀 Strategic Opportunities", "opportunities"),
-                ("⚠️ Risk Assessment", "risks"),
-                ("📊 Scenario Analysis", "scenarios"),
-                ("🧠 Professional Insights", "reflection"),
-                ("🎨 Design Case Study", "logo_text")
+                ("Executive Summary", "exec_summary"),
+                ("Strategic Opportunities", "opportunities"),
+                ("Risk Assessment", "risks"),
+                ("Scenario Analysis", "scenarios"),
+                ("Professional Insights", "reflection"),
+                ("Design Case Study", "logo_text")
             ]
             
             content_data = {}
@@ -1535,9 +1208,8 @@ def main():
                     )
                     
                     if content_data[f"{key}_images"]:
-                        st.success(f"📸 {len(content_data[f'{key}_images'])} image(s)")
+                        st.success(f"{len(content_data[f'{key}_images'])} image(s)")
             
-            # Store content data
             st.session_state.portfolio_data.update(content_data)
             st.session_state.portfolio_data.update({
                 "project_title": project_title,
@@ -1547,8 +1219,8 @@ def main():
             st.markdown('</div>', unsafe_allow_html=True)
         
         with tab3:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.markdown("## 👁️ Live Preview")
+            st.markdown('<div class="client-container">', unsafe_allow_html=True)
+            st.markdown("## Live Preview")
             
             data = st.session_state.portfolio_data
             
@@ -1599,24 +1271,24 @@ def main():
             st.markdown('</div>', unsafe_allow_html=True)
         
         with tab4:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.markdown("## 📄 PDF Export Studio")
+            st.markdown('<div class="client-container">', unsafe_allow_html=True)
+            st.markdown("## PDF Export Studio")
             
             col1, col2 = st.columns(2)
             
             with col1:
                 export_theme = st.radio(
-                    "🎨 Export Theme",
+                    "Export Theme",
                     ["Light", "Dark"],
                     horizontal=True
                 )
             
             with col2:
-                st.info("💡 **Pro Tips:**\n\n• Use high-res images\n• Keep content concise\n• Preview before export")
+                st.info("**Pro Tips:**\n\n• Use high-res images\n• Keep content concise\n• Preview before export")
             
-            if st.button("🎯 Generate Professional Portfolio", use_container_width=True):
+            if st.button("Generate Professional Portfolio", use_container_width=True):
                 try:
-                    with st.spinner("✨ Creating your portfolio..."):
+                    with st.spinner("Creating your portfolio..."):
                         output_file = "admin_portfolio.pdf"
                         
                         pdf_data = st.session_state.portfolio_data.copy()
@@ -1626,9 +1298,9 @@ def main():
                             with open(output_file, "rb") as f:
                                 pdf_bytes = f.read()
                             
-                            st.success("🎉 Portfolio generated successfully!")
+                            st.success("Portfolio generated successfully")
                             st.download_button(
-                                "📥 Download Your Portfolio",
+                                "Download Your Portfolio",
                                 pdf_bytes,
                                 file_name=f"Admin_Portfolio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                                 mime="application/pdf",
@@ -1638,86 +1310,72 @@ def main():
                             os.remove(output_file)
                         
                 except Exception as e:
-                    st.error(f"❌ Error generating PDF: {str(e)}")
+                    st.error(f"Error generating PDF: {str(e)}")
             
             st.markdown('</div>', unsafe_allow_html=True)
     
-    # Client Dashboard
     elif st.session_state.user_role == "client":
-        st.sidebar.markdown("### 👤 Client Portal")
-        st.sidebar.info("🎨 Your portfolio uses **PyStatR+ branding** automatically")
+        st.sidebar.markdown("### Client Portal")
+        st.sidebar.info("Your portfolio uses **PyStatR+ branding** automatically")
         
-        # Client header
         st.markdown("""
         <div class="main-header">
-            <h1 class="main-title">👤 Client Portfolio Portal</h1>
+            <h1 class="main-title">Client Portfolio Portal</h1>
             <p class="subtitle">Build a future-ready consulting portfolio with PyStatR+ branding and AI-driven design</p>
         </div>
         """, unsafe_allow_html=True)
-
         
-        # PyStatR+ branding display
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### 🎨 PyStatR+ Branding (Locked)")
+        st.markdown("### PyStatR+ Branding (Locked)")
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.markdown("**🎯 Brand Color:** Deep Blue (#1E3A8A)")
+            st.markdown("**Brand Color:** Deep Blue (#1E3A8A)")
             st.markdown('<div style="width: 100%; height: 30px; background: #1E3A8A; border-radius: 5px;"></div>', unsafe_allow_html=True)
         
         with col2:
-            st.markdown("**✨ Accent Color:** Bright Yellow (#FFD700)")
+            st.markdown("**Accent Color:** Bright Yellow (#FFD700)")
             st.markdown('<div style="width: 100%; height: 30px; background: #FFD700; border-radius: 5px;"></div>', unsafe_allow_html=True)
         
         with col3:
-            st.markdown("**🔤 Typography:** Helvetica")
+            st.markdown("**Typography:** Helvetica")
             st.markdown('<div style="font-family: Helvetica; font-weight: 600; color: #1E3A8A;">Sample Text</div>', unsafe_allow_html=True)
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Project information
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### 🎯 Project Information")
+        st.markdown("### Project Information")
         
         col1, col2 = st.columns(2)
         with col1:
-            project_title = st.text_input("🏆 Project Title", "Consulting Engagement")
+            project_title = st.text_input("Project Title", "Consulting Engagement")
         with col2:
-            date = st.date_input("📅 Date")
+            date = st.date_input("Date")
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Content sections
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### 📝 Portfolio Content")
+        st.markdown("### Portfolio Content")
         
-        exec_summary = st.text_area("🎯 Executive Summary", height=150, 
-                                    placeholder="Provide a compelling overview of your project's impact and value")
+        exec_summary = st.text_area("Executive Summary", height=150)
         
         col1, col2 = st.columns(2)
         with col1:
-            opportunities = st.text_area("🚀 Strategic Opportunities", height=120,
-                                       placeholder="List key opportunities that drive value (one per line)")
+            opportunities = st.text_area("Strategic Opportunities", height=120)
         with col2:
-            risks = st.text_area("⚠️ Risk Assessment", height=120,
-                                placeholder="Identify potential risks and mitigation strategies (one per line)")
+            risks = st.text_area("Risk Assessment", height=120)
         
-        scenarios = st.text_area("📊 Scenario Analysis", 
+        scenarios = st.text_area("Scenario Analysis", 
                                 value="Primary Strategy | High Investment | 35% ROI | Moderate Risk | Recommended\nAlternative Approach | Medium Investment | 20% ROI | Lower Risk | Consider",
-                                height=100,
-                                placeholder="Format: Option | Investment | Benefits | Risks | Recommendation")
+                                height=100)
         
-        reflection = st.text_area("🧠 Professional Insights", height=150,
-                                 placeholder="Share your key learnings and strategic recommendations")
-        
-        logo_text = st.text_area("🎨 Design Case Study", height=150,
-                                placeholder="Document your creative process and design decisions")
+        reflection = st.text_area("Professional Insights", height=150)
+        logo_text = st.text_area("Design Case Study", height=150)
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # File uploads
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### 📸 Visual Assets (Optional)")
+        st.markdown("### Visual Assets (Optional)")
         
         col1, col2 = st.columns(2)
         with col1:
@@ -1731,27 +1389,23 @@ def main():
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Preview and export
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### 👀 Preview & Export")
+        st.markdown("### Preview & Export")
         
-        # Get client theme from admin settings
         client_pdf_theme = admin_settings.get("client_pdf_theme", "Light")
+        st.info(f"Your portfolio will automatically use **PyStatR+ branding** with **{client_pdf_theme} theme**")
         
-        st.info(f"🎨 Your portfolio will automatically use **PyStatR+ branding** with **{client_pdf_theme} theme** as configured by your consultant.")
-        
-        if st.button("🎯 Generate Portfolio PDF", use_container_width=True):
+        if st.button("Generate Portfolio PDF", use_container_width=True):
             try:
-                with st.spinner("✨ Creating your professional portfolio..."):
+                with st.spinner("Creating your professional portfolio..."):
                     output_file = "client_portfolio.pdf"
                     
-                    # Prepare client data with FORCED PyStatR+ branding
                     client_data = {
                         "project_title": project_title,
                         "date": date,
                         "name": f"Client Portfolio - {st.session_state.user_name}",
-                        "brand_color": "#1E3A8A",      # Deep Blue (FORCED)
-                        "font_choice": "Helvetica",    # FORCED
+                        "brand_color": "#1E3A8A",
+                        "font_choice": "Helvetica",
                         "exec_summary": exec_summary,
                         "opportunities": opportunities,
                         "risks": risks,
@@ -1760,7 +1414,7 @@ def main():
                         "logo_text": logo_text,
                         "exec_summary_images": exec_images,
                         "opportunities_images": or_images,
-                        "risks_images": or_images,  # Note: using same images for both
+                        "risks_images": or_images,
                         "scenarios_images": scen_images,
                         "reflection_images": reflection_images,
                         "logo_text_images": logo_images
@@ -1772,9 +1426,9 @@ def main():
                         with open(output_file, "rb") as f:
                             pdf_bytes = f.read()
                         
-                        st.success("🎉 Portfolio generated successfully!")
+                        st.success("Portfolio generated successfully")
                         st.download_button(
-                            "📥 Download Your Portfolio",
+                            "Download Your Portfolio",
                             pdf_bytes,
                             file_name=f"Client_Portfolio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                             mime="application/pdf",
@@ -1784,126 +1438,17 @@ def main():
                         os.remove(output_file)
                     
             except Exception as e:
-                st.error(f"❌ Error generating PDF: {str(e)}")
+                st.error(f"Error generating PDF: {str(e)}")
         
         st.markdown('</div>', unsafe_allow_html=True)
     
-    # Footer
     st.markdown("---")
-    st.markdown(
-    """
+    st.markdown("""
     <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">
-        <p>🚀 <strong>AI Consulting Portfolio Builder</strong> — Elevating expertise into professional impact</p>
+        <p><strong>AI Consulting Portfolio Builder</strong> — Elevating expertise into professional impact</p>
         <p>Powered by <strong>PyStatRPlus</strong> | Future-ready design meets advanced intelligence</p>
     </div>
-    """,
-    unsafe_allow_html=True
-)
-
-def render_password_panel(admin_settings):
-    st.sidebar.markdown("### 🔑 Password Management")
-
-    # Initialize session state
-    if "password_overrides" not in st.session_state:
-        st.session_state.password_overrides = {}
-
-    # Load saved overrides from admin_settings.json if not already in session
-    if "password_overrides" in admin_settings:
-        for user, info in admin_settings["password_overrides"].items():
-            try:
-                ts = datetime.datetime.fromisoformat(info["timestamp"])
-                st.session_state.password_overrides[user] = {
-                    "password": info["password"],
-                    "timestamp": ts
-                }
-            except:
-                continue
-
-    # Dynamic user list (exclude admin by default)
-    users = list(st.secrets["users"].keys())
-    users = [u for u in users if u.lower() != "alierwai"]
-
-    reset_user = st.sidebar.selectbox("Select user", users)
-    new_pass = st.sidebar.text_input("New password", type="password")
-
-    # ✅ Update Password block (your snippet goes here)
-    if st.sidebar.button("Update Password"):
-        st.session_state.password_overrides[reset_user] = {
-            "password": new_pass,
-            "timestamp": datetime.now()
-        }
-        admin_settings["password_overrides"] = {
-            k: {"password": v["password"], "timestamp": v["timestamp"].isoformat()}
-            for k, v in st.session_state.password_overrides.items()
-        }
-        save_admin_settings(admin_settings)
-        st.sidebar.success(f"Password for {reset_user} updated (session + persisted).")
-
-    # Reset ALL overrides
-    if st.sidebar.button("🔄 Reset to Default Passwords"):
-        st.session_state.password_overrides.clear()
-        admin_settings.pop("password_overrides", None)
-        save_admin_settings(admin_settings)
-        st.sidebar.info("All overrides cleared; defaults restored.")
-
-    
-    # Expiry control
-    expiry_hours = admin_settings.get("override_expiry_hours", 24)
-    st.sidebar.markdown("#### ⏳ Override Expiry")
-    st.sidebar.caption("ℹ️ Overrides older than this reset automatically.")
-    expiry_hours = st.sidebar.slider("Expiry Time (hours)", 1, 72, expiry_hours, 1)
-
-    if expiry_hours != admin_settings.get("override_expiry_hours", 24):
-        admin_settings["override_expiry_hours"] = expiry_hours
-        save_admin_settings(admin_settings)
-        st.sidebar.success(f"✅ Override expiry updated to {expiry_hours} hours")
-
-    MAX_AGE = expiry_hours * 3600
-
-    # Active overrides monitor
-    if st.session_state.password_overrides:
-        st.sidebar.markdown("#### 🔍 Active Overrides")
-        now = datetime.now()
-        for user, info in list(st.session_state.password_overrides.items()):
-            age = (now - info["timestamp"]).total_seconds()
-            remaining = MAX_AGE - age
-            if remaining > 0:
-                hrs = int(remaining // 3600)
-                mins = int((remaining % 3600) // 60)
-                st.sidebar.write(
-                    f"**{user}** — expires in ⏳ {hrs}h {mins}m "
-                    f"(set {info['timestamp'].strftime('%Y-%m-%d %H:%M')})"
-                )
-            else:
-                # Auto-clean expired overrides
-                del st.session_state.password_overrides[user]
-                if "password_overrides" in admin_settings and user in admin_settings["password_overrides"]:
-                    del admin_settings["password_overrides"][user]
-                    save_admin_settings(admin_settings)
-                st.sidebar.warning(f"⚠️ Override for {user} expired and was reset.")
-
-    # Optional Admin Reset (safety valve)
-    st.sidebar.markdown("---")
-    show_admin_reset = st.sidebar.checkbox("⚠️ Enable Admin Reset (dangerous)", value=False)
-
-    if show_admin_reset:
-        st.sidebar.warning("You are about to reset the **admin (alierwai)** password. Proceed carefully.")
-        new_admin_pass = st.sidebar.text_input("New admin password", type="password")
-
-        if st.sidebar.button("Update Admin Password"):
-            st.session_state.password_overrides["alierwai"] = {
-                "password": new_admin_pass,
-                "timestamp": datetime.now()
-            }
-            admin_settings.setdefault("password_overrides", {})
-            admin_settings["password_overrides"]["alierwai"] = {
-                "password": new_admin_pass,
-                "timestamp": datetime.now().isoformat()
-            }
-            save_admin_settings(admin_settings)
-            st.sidebar.success("✅ Admin password override set (session + persisted).")
-
-
+    """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
