@@ -1209,33 +1209,6 @@ def generate_pdf(filename, theme="Light", **kwargs):
                     os.unlink(temp_file)
             except:
                 pass
-import streamlit as st
-
-def choose_preset():
-    """
-    Displays the Brand Preset selector safely and returns the user's choice.
-    Automatically initializes session state presets if needed.
-    """
-    # Ensure presets exist in session state
-    if 'presets' not in st.session_state:
-        st.session_state.presets = {}
-
-    presets = st.session_state.presets
-    preset_names = list(presets.keys())
-
-    # Build dropdown options
-    options = ["Create New"] + preset_names
-    default_index = 1 if preset_names else 0
-
-    # Create the selectbox
-    selected_preset = st.selectbox(
-        "🎯 Brand Preset Library",
-        options,
-        index=default_index
-    )
-
-    # Return both the selected value and the presets dict for convenience
-    return selected_preset, presets
 
 
 def main():
@@ -1385,8 +1358,11 @@ def main():
             col1, col2 = st.columns([2, 1])
             
             with col1:
-                selected_preset, presets = choose_preset()
-
+                preset_names = list(presets.keys())
+                selected_preset = st.selectbox(
+                    "🎯 Brand Preset Library",
+                    ["Create New"] + preset_names
+                )
             
             with col2:
                 if selected_preset != "Create New" and selected_preset in presets:
