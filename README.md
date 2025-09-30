@@ -70,6 +70,7 @@ powered by **PyStatR+ branding, AI-driven content generation, and PDF exports**.
    ```bash
    uv tool add -r requirements.txt
    ```
+   
 4. Run the app
    ```bash
    uv run streamlit run app.py

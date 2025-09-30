@@ -150,7 +150,7 @@ def apply_custom_css():
     }
 
     /* Section Cards (Glassmorphism) */
-    ./* Client Dashboard Cards */
+    /* Client Dashboard Cards */
     .client-container {
         background: rgba(30, 58, 138, 0.85); /* Deep Blue with transparency */
         border: 1px solid rgba(56, 189, 248, 0.6); /* Cyan border */
