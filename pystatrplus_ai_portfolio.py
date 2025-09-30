@@ -383,40 +383,40 @@ def apply_custom_css():
     header {visibility: hidden;}
 
     /* Tabs: text colors */
-.stTabs [role="tab"]{
-  color:#FFD700 !important;         /* default = gold */
-  font-weight:600;
-  box-shadow:none !important;       /* nuke any built-in underline via shadow */
-  border-bottom:none !important;
-}
-.stTabs [role="tab"]:hover{
-  color:#38BDF8 !important;         /* hover = cyan */
-  text-shadow:0 0 6px rgba(56,189,248,.7);
-}
-.stTabs [role="tab"][aria-selected="true"]{
-  color:#38BDF8 !important;         /* active = cyan text */
-}
+    .stTabs [role="tab"]{
+      color:#FFD700 !important;         /* default = gold */
+      font-weight:600;
+      box-shadow:none !important;       /* nuke any built-in underline via shadow */
+      border-bottom:none !important;
+    }
+    .stTabs [role="tab"]:hover{
+      color:#38BDF8 !important;         /* hover = cyan */
+      text-shadow:0 0 6px rgba(56,189,248,.7);
+    }
+    .stTabs [role="tab"][aria-selected="true"]{
+      color:#38BDF8 !important;         /* active = cyan text */
+    }
 
-/* Streamlit/BaseWeb moving highlight bar (the underline) */
-.stTabs [data-baseweb="tab-highlight"]{
-  background-color:#FFD700 !important;   /* gold bar */
-  height:3px !important;
-  border-radius:3px !important;
-}
+    /* Streamlit/BaseWeb moving highlight bar (the underline) */
+    .stTabs [data-baseweb="tab-highlight"]{
+      background-color:#FFD700 !important;   /* gold bar */
+      height:3px !important;
+      border-radius:3px !important;
+    }
 
-/* Fallbacks for newer/older builds that don’t expose data-baseweb */
-.stTabs [class*="tab-highlight"], 
-.stTabs [class*="TabsHighlight"],
-.stTabs div[role="tablist"] > div:last-child{
-  background-color:#FFD700 !important;
-  height:3px !important;
-  border-radius:3px !important;
-}
+    /* Fallbacks for newer/older builds that don’t expose data-baseweb */
+    .stTabs [class*="tab-highlight"], 
+    .stTabs [class*="TabsHighlight"],
+    .stTabs div[role="tablist"] > div:last-child{
+      background-color:#FFD700 !important;
+      height:3px !important;
+      border-radius:3px !important;
+    }
 
-/* Remove any bottom border on the tab strip itself */
-.stTabs [role="tablist"]{
-  border-bottom:none !important;
-}
+    /* Remove any bottom border on the tab strip itself */
+    .stTabs [role="tablist"]{
+      border-bottom:none !important;
+    }
 
 
     /* Hyperlinks inside app */
@@ -836,6 +836,50 @@ def apply_custom_css():
         box-shadow: 0 0 18px rgba(255,215,0,0.9) !important;
         transform: translateY(-2px) scale(1.03);
     }
+
+    /* 🌌 PyStatR+ Breathing Glow for Selectboxes */
+    @keyframes breathingGlow {
+        0% {
+            box-shadow: 0 0 4px rgba(56,189,248,0.4), 0 0 8px rgba(56,189,248,0.2);
+            border-color: rgba(56,189,248,0.6);
+        }
+        50% {
+            box-shadow: 0 0 18px rgba(255,215,0,0.8), 0 0 32px rgba(56,189,248,0.5);
+            border-color: #FFD700;
+        }
+        100% {
+            box-shadow: 0 0 4px rgba(56,189,248,0.4), 0 0 8px rgba(56,189,248,0.2);
+            border-color: rgba(56,189,248,0.6);
+        }
+    }
+    
+    /* Default selectbox style — calm cyan base */
+    [data-baseweb="select"] > div {
+        border: 1px solid rgba(56,189,248,0.5) !important;
+        box-shadow: 0 0 6px rgba(56,189,248,0.3) !important;
+        border-radius: 10px !important;
+        transition: all 0.4s ease-in-out !important;
+    }
+    
+    /* Hover — begin the breathing glow */
+    [data-baseweb="select"] > div:hover {
+        animation: breathingGlow 4s ease-in-out infinite !important;
+        transform: scale(1.015);
+    }
+    
+    /* Focus — stronger, golden confidence glow */
+    [data-baseweb="select"] > div:focus-within {
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 20px rgba(255,215,0,0.7), 0 0 30px rgba(56,189,248,0.5) !important;
+        animation: breathingGlow 2.5s ease-in-out infinite !important;
+    }
+    
+    /* Remove red borders entirely */
+    [data-baseweb="select"] > div[aria-invalid="true"] {
+        border-color: rgba(56,189,248,0.6) !important;
+        box-shadow: 0 0 8px rgba(56,189,248,0.3) !important;
+    }
+    
 
     </style>
     """, unsafe_allow_html=True)
