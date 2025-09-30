@@ -852,7 +852,7 @@ def apply_custom_css():
             border-color: rgba(56,189,248,0.6);
         }
     }
-    
+
     /* Default selectbox style — calm cyan base */
     [data-baseweb="select"] > div {
         border: 1px solid rgba(56,189,248,0.5) !important;
@@ -860,26 +860,26 @@ def apply_custom_css():
         border-radius: 10px !important;
         transition: all 0.4s ease-in-out !important;
     }
-    
+
     /* Hover — begin the breathing glow */
     [data-baseweb="select"] > div:hover {
         animation: breathingGlow 4s ease-in-out infinite !important;
         transform: scale(1.015);
     }
-    
+
     /* Focus — stronger, golden confidence glow */
     [data-baseweb="select"] > div:focus-within {
         border-color: #FFD700 !important;
         box-shadow: 0 0 20px rgba(255,215,0,0.7), 0 0 30px rgba(56,189,248,0.5) !important;
         animation: breathingGlow 2.5s ease-in-out infinite !important;
     }
-    
+
     /* Remove red borders entirely */
     [data-baseweb="select"] > div[aria-invalid="true"] {
         border-color: rgba(56,189,248,0.6) !important;
         box-shadow: 0 0 8px rgba(56,189,248,0.3) !important;
     }
-    
+
 
     </style>
     """, unsafe_allow_html=True)
@@ -1209,6 +1209,33 @@ def generate_pdf(filename, theme="Light", **kwargs):
                     os.unlink(temp_file)
             except:
                 pass
+import streamlit as st
+
+def choose_preset():
+    """
+    Displays the Brand Preset selector safely and returns the user's choice.
+    Automatically initializes session state presets if needed.
+    """
+    # Ensure presets exist in session state
+    if 'presets' not in st.session_state:
+        st.session_state.presets = {}
+
+    presets = st.session_state.presets
+    preset_names = list(presets.keys())
+
+    # Build dropdown options
+    options = ["Create New"] + preset_names
+    default_index = 1 if preset_names else 0
+
+    # Create the selectbox
+    selected_preset = st.selectbox(
+        "🎯 Brand Preset Library",
+        options,
+        index=default_index
+    )
+
+    # Return both the selected value and the presets dict for convenience
+    return selected_preset, presets
 
 
 def main():
@@ -1358,11 +1385,8 @@ def main():
             col1, col2 = st.columns([2, 1])
             
             with col1:
-                preset_names = list(presets.keys())
-                selected_preset = st.selectbox(
-                    "🎯 Brand Preset Library",
-                    ["Create New"] + preset_names
-                )
+                selected_preset, presets = choose_preset()
+
             
             with col2:
                 if selected_preset != "Create New" and selected_preset in presets:
@@ -1846,6 +1870,7 @@ def render_password_panel(admin_settings):
         save_admin_settings(admin_settings)
         st.sidebar.info("All overrides cleared; defaults restored.")
 
+    
     # Expiry control
     expiry_hours = admin_settings.get("override_expiry_hours", 24)
     st.sidebar.markdown("#### ⏳ Override Expiry")
