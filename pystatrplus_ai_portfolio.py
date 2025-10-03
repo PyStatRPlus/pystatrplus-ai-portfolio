@@ -1,10 +1,15 @@
 import streamlit as st
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image
+from reportlab.platypus import (
+    BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer, Table, TableStyle,
+    PageBreak, Image, KeepTogether, ListFlowable, ListItem, SimpleDocTemplate
+)
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 from reportlab.lib import colors
+from reportlab.lib.units import inch
+from reportlab.lib.utils import ImageReader
 from datetime import datetime, timedelta
 import os
 import tempfile
@@ -134,22 +139,22 @@ def apply_custom_css():
     .main-title {
         font-size: 3rem !important;
         font-weight: 800 !important;
-        background: linear-gradient(90deg, #FFD700, #38BDF8) !important;
+        background: linear-gradient(90deg, #FFD700, #FFFFFF) !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
         margin-bottom: 1rem !important;
         letter-spacing: 1px !important;
     }
-    
+
     .subtitle {
         font-size: 1.2rem !important;
-        color: #38BDF8 !important;
+        color: #FFFFFF !important;
         font-weight: 300 !important;
         margin-bottom: 1rem !important;
-        text-shadow: 0 0 10px rgba(56,189,248,0.7) !important;
+        text-shadow: 0 0 10px rgba(255,255,255,0.5) !important;
     }
-    
+
     /* ========================================= */
     /* CLIENT CONTAINERS - Enhanced Targeting */
     /* ========================================= */
@@ -483,18 +488,18 @@ def apply_custom_css():
     table {
         border-collapse: collapse !important;
         width: 100% !important;
-        border: 1px solid rgba(56,189,248,0.4) !important;
+        border: 1px solid rgba(255,215,0,0.4) !important;
         border-radius: 12px !important;
         overflow: hidden !important;
         background: rgba(15, 23, 42, 0.6) !important;
         backdrop-filter: blur(12px) !important;
-        box-shadow: 0 0 18px rgba(56,189,248,0.3) !important;
+        box-shadow: 0 0 18px rgba(255,215,0,0.3) !important;
     }
     
     .stTable th,
     table th {
-        background: linear-gradient(135deg, #38BDF8, #1E3A8A) !important;
-        color: #FFD700 !important;
+        background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+        color: #1E3A8A !important;
         text-align: center !important;
         padding: 10px !important;
         font-weight: 700 !important;
@@ -505,13 +510,13 @@ def apply_custom_css():
     table td {
         padding: 8px 10px !important;
         text-align: center !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.15) !important;
         color: #f1f5f9 !important;
     }
     
     .stTable tr:nth-child(even) td,
     table tr:nth-child(even) td {
-        background: rgba(56,189,248,0.08) !important;
+        background: rgba(255,215,0,0.08) !important;
     }
     
     .stTable tr:hover td,
@@ -586,7 +591,7 @@ def create_metric_cards():
     with col1:
         st.markdown("""
         <div class="metric-card">
-            <div class="metric-value">4.9⭐</div>
+            <div class="metric-value">4.9 ⭐</div>
             <div class="metric-label">Expert Rating</div>
         </div>
         """, unsafe_allow_html=True)
@@ -615,21 +620,106 @@ def create_metric_cards():
         </div>
         """, unsafe_allow_html=True)
 
-def add_images_to_story(story, images):
-    temp_files = []
-    if images:
-        for img_file in images:
-            try:
-                img_file.seek(0)
-                with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(img_file.name)[1]) as tmp:
-                    tmp.write(img_file.read())
-                    tmp_path = tmp.name
-                    temp_files.append(tmp_path)
-                story.append(Image(tmp_path, width=300, height=200))
-                story.append(Spacer(1, 12))
-            except Exception as e:
-                st.warning(f"Could not process image {img_file.name}: {str(e)}")
-    return temp_files
+# ---------- THEME HELPERS ----------
+
+def _theme_colors(theme="Light"):
+    if theme == "Dark":
+        return {
+            "text": colors.HexColor("#F8FAFC"),
+            "title": colors.HexColor("#FFD700"),
+            "heading": colors.HexColor("#38BDF8"),
+            "accent": colors.HexColor("#FFD700"),
+            "band": colors.HexColor("#0B1220"),
+            "table_bg": colors.HexColor("#111827"),
+            "table_alt": colors.HexColor("#1E293B")
+        }
+    return {
+        "text": colors.HexColor("#1A365D"),
+        "title": colors.HexColor("#1E3A8A"),
+        "heading": colors.HexColor("#38BDF8"),
+        "accent": colors.HexColor("#FFD700"),
+        "band": colors.HexColor("#EEF2FF"),
+        "table_bg": colors.whitesmoke,
+        "table_alt": colors.HexColor("#F3F4F6")
+    }
+
+def _make_styles(theme="Light", base_font="Helvetica"):
+    styles = getSampleStyleSheet()
+    palette = _theme_colors(theme)
+
+    # Base body
+    body = ParagraphStyle(
+        "Body",
+        parent=styles["Normal"],
+        fontName=base_font,
+        fontSize=11.5,
+        leading=16,
+        textColor=palette["text"],
+        spaceBefore=6,
+        spaceAfter=6,
+        alignment=TA_JUSTIFY,
+    )
+    # Title
+    title = ParagraphStyle(
+        "TitleX",
+        parent=styles["Title"],
+        fontName="Helvetica-Bold",
+        fontSize=28,
+        leading=32,
+        textColor=palette["title"],
+        alignment=TA_CENTER,
+        spaceAfter=18,
+    )
+    # Subtitle/Header line
+    h2 = ParagraphStyle(
+        "H2",
+        parent=styles["Heading2"],
+        fontName="Helvetica-Bold",
+        fontSize=16,
+        leading=20,
+        textColor=palette["heading"],
+        spaceBefore=18,
+        spaceAfter=8,
+    )
+    # Small footer text
+    small = ParagraphStyle(
+        "Small",
+        parent=styles["Normal"],
+        fontName=base_font,
+        fontSize=9.5,
+        leading=12,
+        textColor=palette["heading"],
+        alignment=TA_CENTER,
+    )
+    # Bullet items
+    bullet = ParagraphStyle(
+        "Bullet",
+        parent=body,
+        leftIndent=0,
+        spaceBefore=2,
+        spaceAfter=2,
+    )
+    return {"body": body, "title": title, "h2": h2, "small": small, "bullet": bullet, "palette": palette}
+
+# ---------- PAGE DECORATIONS ----------
+
+def _draw_heart(canvas_obj, x, y, s=8, color=colors.HexColor("#EF4444")):
+    # Simple vector heart: two circles + triangle
+    canvas_obj.saveState()
+    canvas_obj.setFillColor(color)
+    r = s * 0.35
+    # left bump
+    canvas_obj.circle(x - r, y, r, fill=1, stroke=0)
+    # right bump
+    canvas_obj.circle(x + r, y, r, fill=1, stroke=0)
+    # point
+    p = canvas_obj.beginPath()
+    p.moveTo(x - 2*r, y)
+    p.lineTo(x + 2*r, y)
+    p.lineTo(x, y - 2.2*r)
+    p.close()
+    canvas_obj.drawPath(p, fill=1, stroke=0)
+    canvas_obj.restoreState()
 
 def add_watermark(canvas_obj, doc, theme="Light", logo_path=None):
     canvas_obj.saveState()
@@ -640,7 +730,6 @@ def add_watermark(canvas_obj, doc, theme="Light", logo_path=None):
         wm_color = colors.Color(0.1, 0.2, 0.5, alpha=0.08)
     
     if logo_path and os.path.exists(logo_path):
-        from reportlab.lib.utils import ImageReader
         logo = ImageReader(logo_path)
         canvas_obj.translate(150, 250)
         canvas_obj.rotate(30)
@@ -654,197 +743,193 @@ def add_watermark(canvas_obj, doc, theme="Light", logo_path=None):
     
     canvas_obj.restoreState()
 
+def _footer(canvas_obj, doc, theme="Light"):
+    palette = _theme_colors(theme)
+    canvas_obj.saveState()
+    w = doc.width
+    x = doc.leftMargin
+    y = 0.55 * inch
+
+    # subtle divider
+    canvas_obj.setStrokeColor(palette["accent"])
+    canvas_obj.setLineWidth(0.8)
+    canvas_obj.line(x, y + 12, x + w, y + 12)
+
+    # "Built with ♥ by PyStatR+!" (italicized in deep blue)
+    text = "Built with  by PyStatR+!"
+    canvas_obj.setFillColor(colors.HexColor("#1E3A8A"))  # Deep blue color
+    canvas_obj.setFont("Helvetica-Oblique", 9.5)  # Italic font
+    tw = canvas_obj.stringWidth(text, "Helvetica-Oblique", 9.5)
+    cx = doc.leftMargin + (doc.width / 2.0) - (tw / 2.0)
+    canvas_obj.drawString(cx, y, text)
+    # draw the heart over the gap after "with "
+    heart_x = cx + canvas_obj.stringWidth("Built with ", "Helvetica-Oblique", 9.5) + 5
+    heart_y = y + 4
+    _draw_heart(canvas_obj, heart_x, heart_y, s=9, color=colors.HexColor("#EF4444"))
+
+    canvas_obj.restoreState()
+
+def _on_page(canvas_obj, doc, theme="Light", wm_logo_path=None):
+    # optional watermark first
+    add_watermark(canvas_obj, doc, theme=theme, logo_path=wm_logo_path)
+    _footer(canvas_obj, doc, theme)
+
+def _on_cover(canvas_obj, doc, theme="Light", wm_logo_path=None):
+    # cover can share same footer/watermark
+    add_watermark(canvas_obj, doc, theme=theme, logo_path=wm_logo_path)
+    _footer(canvas_obj, doc, theme)
+
+# ---------- CONTENT HELPERS ----------
+
+def _bulleted_list(text, style):
+    if not text:
+        return None
+    lines = [ln.strip("• ").strip("- ").strip() for ln in text.split("\n") if ln.strip()]
+    if not lines:
+        return None
+    items = [ListItem(Paragraph(line, style), leftIndent=6) for line in lines]
+    return ListFlowable(
+        items,
+        bulletType="bullet",
+        start="circle",
+        bulletFontName="Helvetica",
+        bulletFontSize=10,
+        bulletIndent=0,
+        leftIndent=12,
+        spaceBefore=4,
+        spaceAfter=6,
+    )
+def _scenario_table(raw, theme="Light", doc_width=450):
+    if not raw:
+        return None
+    rows = []
+    for ln in raw.split("\n"):
+        if "|" in ln:
+            parts = [p.strip() for p in ln.split("|")]
+            if len(parts) >= 5:
+                rows.append(parts[:5])
+
+    if not rows:
+        return None
+
+    palette = _theme_colors(theme)
+    headers = ["Option", "Investment", "Benefits", "Risks", "Recommendation"]
+    
+    # Wrap text in Paragraphs for proper text wrapping
+    style = ParagraphStyle(
+        "TableCell",
+        fontName="Helvetica",
+        fontSize=9,
+        leading=11,
+        alignment=TA_LEFT,
+        textColor=palette["text"]
+    )
+    
+    header_style = ParagraphStyle(
+        "TableHeader",
+        fontName="Helvetica-Bold",
+        fontSize=9,
+        leading=11,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#1E3A8A")
+    )
+    
+    # Create header row with Paragraphs
+    data = [[Paragraph(h, header_style) for h in headers]]
+    
+    # Create data rows with Paragraphs for wrapping
+    for row in rows:
+        data.append([Paragraph(str(cell), style) for cell in row])
+
+    # Proportional widths
+    col_widths = [
+        doc_width * 0.18,
+        doc_width * 0.16,
+        doc_width * 0.26,
+        doc_width * 0.26,
+        doc_width * 0.14,
+    ]
+
+    t = Table(data, colWidths=col_widths, repeatRows=1)
+    t.setStyle(TableStyle([
+        # header - Gold gradient background with deep blue text
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#FFD700")),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), 9),
+        ("ALIGN", (0, 0), (-1, 0), "CENTER"),
+        ("VALIGN", (0, 0), (-1, 0), "MIDDLE"),
+        ("TOPPADDING", (0, 0), (-1, 0), 8),
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
+        # body
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE", (0, 1), (-1, -1), 9),
+        ("ALIGN", (0, 1), (-1, -1), "LEFT"),
+        ("VALIGN", (0, 1), (-1, -1), "TOP"),
+        ("TOPPADDING", (0, 1), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 1), (-1, -1), 6),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [palette["table_bg"], palette["table_alt"]]),
+        ("GRID", (0, 0), (-1, -1), 0.6, colors.HexColor("#FFD700")),  # Gold borders
+    ]))
+    return t
+
+def _image_flowables(files, max_width):
+    """Scale images to fit page width, keep aspect ratio."""
+    if not files:
+        return [], []
+    temps = []
+    flows = []
+    for img_file in files:
+        try:
+            img_file.seek(0)
+            suffix = os.path.splitext(getattr(img_file, "name", "img"))[1] or ".png"
+            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                tmp.write(img_file.read())
+                path = tmp.name
+                temps.append(path)
+            reader = ImageReader(path)
+            iw, ih = reader.getSize()
+            scale = min(max_width / float(iw), 1.0)
+            w = iw * scale
+            h = ih * scale
+            flows.append(Image(path, width=w, height=h))
+            flows.append(Spacer(1, 8))
+        except Exception as e:
+            st.warning(f"Could not process image {getattr(img_file, 'name', 'image')}: {e}")
+    return flows, temps
+
+# ---------- MAIN PDF BUILDER ----------
+
 def generate_pdf(filename, theme="Light", **kwargs):
     temp_files = []
     try:
-        doc = SimpleDocTemplate(filename, pagesize=letter)
-        story = []
-        styles = getSampleStyleSheet()
-        
-        if theme == "Dark":
-            text_color_main = colors.HexColor("#F8FAFC")
-            title_color = colors.HexColor("#FFD700")
-            heading_color = colors.HexColor("#38BDF8")
-            accent_color = colors.HexColor("#FFD700")
-        else:
-            text_color_main = colors.HexColor("#1A365D")
-            title_color = colors.HexColor("#1E3A8A")
-            heading_color = colors.HexColor("#38BDF8")
-            accent_color = colors.HexColor("#FFD700")
-        
-        title_style = ParagraphStyle(
-            "CustomTitle",
-            parent=styles['Title'],
-            fontName="Helvetica-Bold",
-            fontSize=28,
-            textColor=title_color,
-            alignment=TA_CENTER,
-            spaceAfter=30,
-            leading=32
+        # --- theme & styles
+        palette = _theme_colors(theme)
+        base_font = kwargs.get("font_choice", "Helvetica")
+        S = _make_styles(theme, base_font=base_font)
+
+        # --- doc & frames (reserve footer space)
+        doc = BaseDocTemplate(
+            filename,
+            pagesize=letter,
+            leftMargin=0.9 * inch,
+            rightMargin=0.9 * inch,
+            topMargin=0.9 * inch,
+            bottomMargin=0.9 * inch,
+            allowSplitting=1,
+            title=kwargs.get("project_title", "AI Consulting Portfolio"),
         )
-        
-        heading_style = ParagraphStyle(
-            "CustomHeading",
-            parent=styles['Heading2'],
-            fontName="Helvetica-Bold",
-            fontSize=16,
-            textColor=heading_color,
-            spaceBefore=24,
-            spaceAfter=12,
-            borderWidth=1,
-            borderColor=accent_color,
-            borderPadding=4,
-            leading=20
+        frame = Frame(
+            doc.leftMargin,
+            doc.bottomMargin + 0.5 * inch,  # footer space
+            doc.width,
+            doc.height - 0.7 * inch,
+            id="normal",
+            showBoundary=0,
         )
-        
-        body_style = ParagraphStyle(
-            "CustomBody",
-            parent=styles['Normal'],
-            fontName="Helvetica",
-            fontSize=12,
-            textColor=text_color_main,
-            spaceBefore=6,
-            spaceAfter=6,
-            alignment=TA_JUSTIFY,
-            leading=16
-        )
-        
-        story.append(Spacer(1, 80))
-        
-        if kwargs.get("logo"):
-            try:
-                logo_bytes = base64.b64decode(kwargs["logo"])
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
-                    tmp.write(logo_bytes)
-                    tmp_path = tmp.name
-                    temp_files.append(tmp_path)
-                story.append(Image(tmp_path, width=150, height=150))
-                story.append(Spacer(1, 50))
-            except:
-                pass
-        
-        story.append(Paragraph(kwargs.get("project_title", "AI Consulting Portfolio"), title_style))
-        story.append(Paragraph("Professional Consulting Portfolio", heading_style))
-        story.append(Spacer(1, 30))
-        story.append(Paragraph(f"Prepared by: {kwargs.get('name', 'AI Consultant')}", body_style))
-        
-        if kwargs.get("date"):
-            if hasattr(kwargs["date"], 'strftime'):
-                date_str = kwargs["date"].strftime('%B %d, %Y')
-            else:
-                date_str = str(kwargs["date"])
-            story.append(Paragraph(f"Date: {date_str}", body_style))
-        
-        story.append(Spacer(1, 60))
-        
-        divider_color = colors.HexColor("#38BDF8") if theme == "Light" else colors.HexColor("#FFD700")
-        divider = Table(
-            [[""]],
-            colWidths=[450],
-            rowHeights=[6],
-            style=TableStyle([
-                ("BACKGROUND", (0, 0), (-1, -1), divider_color),
-                ("LINEBELOW", (0, 0), (-1, -1), 0, divider_color),
-            ])
-        )
-        story.append(divider)
-        story.append(Spacer(1, 20))
-        footer_text = Paragraph(
-            "Elevating Expertise into Professional Impact — Powered by PyStatR+",
-            ParagraphStyle(
-                "Footer",
-                fontName="Helvetica-Oblique",
-                fontSize=10,
-                textColor=divider_color,
-                alignment=TA_CENTER,
-                spaceBefore=10
-            )
-        )
-        story.append(footer_text)
-        story.append(PageBreak())
-        
-        sections = [
-            ("Executive Summary", "exec_summary"),
-            ("Strategic Opportunities", "opportunities"),
-            ("Risk Assessment", "risks"),
-            ("Scenario Analysis", "scenarios"),
-            ("Professional Insights", "reflection"),
-            ("Design Case Study", "logo_text")
-        ]
-        
-        for title, key in sections:
-            if kwargs.get(key):
-                story.append(Paragraph(title, heading_style))
-                
-                if key in ["opportunities", "risks"]:
-                    items = [line.strip() for line in kwargs[key].split("\n") if line.strip()]
-                    for item in items:
-                        story.append(Paragraph(f"• {item}", body_style))
-                elif key == "scenarios":
-                    lines = [line for line in kwargs[key].split("\n") if "|" in line]
-                    if lines:
-                        table_data = [["Option", "Investment", "Benefits", "Risks", "Recommendation"]]
-                        for line in lines:
-                            parts = [p.strip() for p in line.split("|")]
-                            if len(parts) >= 5:
-                                table_data.append(parts[:5])
-                        
-                        if len(table_data) > 1:
-                            table = Table(table_data, colWidths=[80, 70, 120, 120, 100])
-                            table.setStyle(TableStyle([
-                                ("BACKGROUND", (0, 0), (-1, 0), heading_color),
-                                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-                                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-                                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                                ("FONTSIZE", (0, 0), (-1, 0), 10),
-                                ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
-                                ("BACKGROUND", (0, 1), (-1, -1), colors.whitesmoke if theme=="Light" else colors.HexColor("#1E293B")),
-                                ("GRID", (0, 0), (-1, -1), 1, accent_color),
-                            ]))
-                            story.append(table)
-                else:
-                    story.append(Paragraph(kwargs[key], body_style))
-                
-                image_key = f"{key}_images"
-                if kwargs.get(image_key):
-                    img_temp_files = add_images_to_story(story, kwargs[image_key])
-                    temp_files.extend(img_temp_files)
-                
-                story.append(Spacer(1, 20))
-        
-        story.append(PageBreak())
-        story.append(Spacer(1, 200))
-        story.append(divider)
-        story.append(Spacer(1, 30))
-        
-        closing_text = Paragraph(
-            "Thank you for reviewing this portfolio.<br/>For inquiries, collaborations, or consulting engagements, please contact your PyStatR+ consultant.",
-            ParagraphStyle(
-                "ClosingText",
-                fontName="Helvetica",
-                fontSize=12,
-                textColor=text_color_main,
-                alignment=TA_CENTER,
-                leading=16,
-                spaceBefore=20
-            )
-        )
-        story.append(closing_text)
-        story.append(Spacer(1, 40))
-        
-        closing_footer = Paragraph(
-            "Elevating Expertise into Professional Impact — Powered by PyStatR+",
-            ParagraphStyle(
-                "ClosingFooter",
-                fontName="Helvetica-Oblique",
-                fontSize=10,
-                textColor=divider_color,
-                alignment=TA_CENTER,
-                spaceBefore=20
-            )
-        )
-        story.append(closing_footer)
-        
+
+        # watermark logo (if any)
         wm_logo_path = None
         if kwargs.get("logo"):
             try:
@@ -854,28 +939,128 @@ def generate_pdf(filename, theme="Light", **kwargs):
                     wm_logo_path = tmp.name
                     temp_files.append(wm_logo_path)
             except:
-                pass
-        
-        doc.build(
-            story,
-            onFirstPage=lambda c, d: add_watermark(c, d, theme, wm_logo_path),
-            onLaterPages=lambda c, d: add_watermark(c, d, theme, wm_logo_path)
+                wm_logo_path = None
+
+        cover_tpl = PageTemplate(
+            id="Cover",
+            frames=[frame],
+            onPage=lambda c, d: _on_cover(c, d, theme, wm_logo_path),
         )
+        normal_tpl = PageTemplate(
+            id="Normal",
+            frames=[frame],
+            onPage=lambda c, d: _on_page(c, d, theme, wm_logo_path),
+        )
+        doc.addPageTemplates([cover_tpl, normal_tpl])
+
+        story = []
+
+        # ---- COVER
+        story.append(Spacer(1, 40))
+        # cover logo (if provided)
+        if kwargs.get("logo"):
+            try:
+                logo_bytes = base64.b64decode(kwargs["logo"])
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
+                    tmp.write(logo_bytes)
+                    logo_path = tmp.name
+                    temp_files.append(logo_path)
+                # center logo, capped to 1.6 in width
+                story.append(KeepTogether([
+                    Image(logo_path, width=1.6*inch, height=1.6*inch),
+                    Spacer(1, 16)
+                ]))
+            except:
+                pass
+
+        story.append(Paragraph(kwargs.get("project_title", "AI Consulting Portfolio"), S["title"]))
+        story.append(Paragraph("Professional Consulting Portfolio", S["h2"]))
+        story.append(Spacer(1, 10))
+
+        author = kwargs.get("name", "AI Consultant")
+        story.append(Paragraph(f"Prepared by: {author}", S["body"]))
+
+        if kwargs.get("date"):
+            date_val = kwargs["date"]
+            date_str = date_val.strftime("%B %d, %Y") if hasattr(date_val, "strftime") else str(date_val)
+            story.append(Paragraph(f"Date: {date_str}", S["body"]))
+
+        story.append(Spacer(1, 22))
+        # thin accent bar
+        story.append(Table([[""]], colWidths=[doc.width], rowHeights=[6],
+                           style=TableStyle([("BACKGROUND", (0,0), (-1,-1), palette["heading"])])))
+        story.append(Spacer(1, 8))
+        story.append(Paragraph("Elevating Expertise into Professional Impact — Powered by PyStatR+", S["small"]))
+        story.append(PageBreak())
+        # switch to normal template
+        story.append(Spacer(1, 2))
+
+        # ---- SECTIONS
+        sections = [
+            ("Executive Summary", "exec_summary"),
+            ("Strategic Opportunities", "opportunities"),
+            ("Risk Assessment", "risks"),
+            ("Scenario Analysis", "scenarios"),
+            ("Professional Insights", "reflection"),
+            ("Design Case Study", "logo_text"),
+        ]
+
+        for title, key in sections:
+            content = kwargs.get(key)
+            imgs = kwargs.get(f"{key}_images")
+            if not (content or imgs):
+                continue
+
+            story.append(Paragraph(title, S["h2"]))
+
+            if key in ("opportunities", "risks"):
+                bl = _bulleted_list(content, S["bullet"])
+                if bl:
+                    story.append(bl)
+            elif key == "scenarios":
+                tbl = _scenario_table(content, theme=theme, doc_width=doc.width)
+                if tbl:
+                    story.append(tbl)
+            else:
+                if content:
+                    story.append(Paragraph(content.replace("\n\n", "<br/><br/>").replace("\n", "<br/>"), S["body"]))
+
+            if imgs:
+                flows, temps = _image_flowables(imgs, max_width=doc.width)
+                temp_files.extend(temps)
+                if flows:
+                    story.extend(flows)
+
+            story.append(Spacer(1, 10))
+
+        # ---- CLOSING
+        story.append(PageBreak())
+        story.append(Spacer(1, 40))
+        story.append(Paragraph(
+            "Thank you for reviewing this portfolio.<br/>"
+            "For inquiries, collaborations, or consulting engagements, please contact your PyStatR+ consultant.",
+            S["body"],
+        ))
+        story.append(Spacer(1, 14))
+        story.append(Paragraph("Elevating Expertise into Professional Impact — Powered by PyStatR+", S["small"]))
+
+        # ---- BUILD
+        doc.build(story)
         return True
-        
+
     except Exception as e:
         st.error(f"PDF generation failed: {e}")
         return False
     finally:
-        for temp_file in temp_files:
+        for temp in temp_files:
             try:
-                if os.path.exists(temp_file):
-                    os.unlink(temp_file)
+                if os.path.exists(temp):
+                    os.unlink(temp)
             except:
                 pass
 
 def render_password_panel(admin_settings):
-    st.sidebar.markdown("### Password Management")
+    st.sidebar.markdown("### 🔑 Password Management")
 
     if "password_overrides" not in st.session_state:
         st.session_state.password_overrides = {}
@@ -897,7 +1082,7 @@ def render_password_panel(admin_settings):
     reset_user = st.sidebar.selectbox("Select user", users)
     new_pass = st.sidebar.text_input("New password", type="password")
 
-    if st.sidebar.button("Update Password"):
+    if st.sidebar.button("🔄 Update Password"):
         st.session_state.password_overrides[reset_user] = {
             "password": new_pass,
             "timestamp": datetime.now()
@@ -909,14 +1094,14 @@ def render_password_panel(admin_settings):
         save_admin_settings(admin_settings)
         st.sidebar.success(f"Password for {reset_user} updated")
 
-    if st.sidebar.button("Reset to Default Passwords"):
+    if st.sidebar.button("🔓 Reset to Default Passwords"):
         st.session_state.password_overrides.clear()
         admin_settings.pop("password_overrides", None)
         save_admin_settings(admin_settings)
         st.sidebar.info("All overrides cleared")
 
     expiry_hours = admin_settings.get("override_expiry_hours", 24)
-    st.sidebar.markdown("#### Override Expiry")
+    st.sidebar.markdown("#### ⏰ Override Expiry")
     expiry_hours = st.sidebar.slider("Expiry Time (hours)", 1, 72, expiry_hours, 1)
 
     if expiry_hours != admin_settings.get("override_expiry_hours", 24):
@@ -927,7 +1112,7 @@ def render_password_panel(admin_settings):
     MAX_AGE = expiry_hours * 3600
 
     if st.session_state.password_overrides:
-        st.sidebar.markdown("#### Active Overrides")
+        st.sidebar.markdown("#### 📋 Active Overrides")
         now = datetime.now()
         for user, info in list(st.session_state.password_overrides.items()):
             age = (now - info["timestamp"]).total_seconds()
@@ -965,17 +1150,17 @@ def main():
     if not st.session_state.authenticated:
         st.markdown("""
         <div class="main-header">
-            <h1 class="main-title">Portfolio Builder Login</h1>
-            <p class="subtitle">Access your professional consulting portfolio tools</p>
+            <h1 class="main-title">🔐 Portfolio Builder Login</h1>
+            <p class="subtitle">🎯 Access your professional consulting portfolio tools</p>
         </div>
         """, unsafe_allow_html=True)
         
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            username = st.text_input("Username")
-            password = st.text_input("Password", type="password")
+            username = st.text_input("👤 Username")
+            password = st.text_input("🔒 Password", type="password")
             
-            if st.button("Secure Access", use_container_width=True):
+            if st.button("🔐 Secure Access", use_container_width=True):
                 user = check_credentials(username, password)
                 if user:
                     st.session_state.authenticated = True
@@ -988,18 +1173,32 @@ def main():
                     st.error("Invalid credentials")
         return
     
-    if st.sidebar.button("End Session"):
+    if st.sidebar.button("🚪 End Session"):
         st.session_state.clear()
         st.rerun()
     
-    st.sidebar.success(f"Welcome **{st.session_state.user_name}** ({st.session_state.user_role.title()})")
+    st.sidebar.success(f"👋 Welcome **{st.session_state.user_name}** ({st.session_state.user_role.title()})")
     
     if st.session_state.user_role == "admin":
-        st.sidebar.markdown("### Admin Controls")
+        # Add PyStatR+ Logo at top of sidebar
+        if os.path.exists("assets/pystatrplus_logo.png"):
+            st.sidebar.image("assets/pystatrplus_logo.png", width=150)
+        else:
+            # Fallback to icon if logo not found
+            st.sidebar.markdown("""
+            <div style="text-align: center; padding: 1rem 0 2rem 0;">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;">📊</div>
+                <div style="font-size: 1.2rem; font-weight: 700; color: #FFD700;">
+                    PyStatR+
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.sidebar.markdown("### ⚙️ Admin Controls")
         render_password_panel(admin_settings)
 
         client_pdf_theme = st.sidebar.radio(
-            "Default PDF Theme for All Clients",
+            "🎨 Default PDF Theme for All Clients",
             ["Light", "Dark"],
             index=0 if admin_settings["client_pdf_theme"] == "Light" else 1
         )
@@ -1013,18 +1212,18 @@ def main():
         
         st.markdown("""
         <div class="main-header">
-            <h1 class="main-title">AI Consulting Portfolio Builder</h1>
-            <p class="subtitle">Turn your expertise into client-ready, professional portfolios powered by AI</p>
+            <h1 class="main-title">🚀 AI Consulting Portfolio Builder</h1>
+            <p class="subtitle">⚡ Turn your expertise into client-ready, professional portfolios powered by AI</p>
         </div>
         """, unsafe_allow_html=True)
         
         create_metric_cards()
         
         tab1, tab2, tab3, tab4 = st.tabs([
-            "Brand Identity Workshop",
-            "Strategic Content Composer",
-            "Interactive Portfolio Preview",
-            "Professional Export Hub"
+                "🎨 Brand Identity Workshop",
+                "✍️ Strategic Content Composer",
+                "👀 Interactive Portfolio Preview",
+                "📑 Professional Export Hub"
         ])
         
         if 'portfolio_data' not in st.session_state:
@@ -1032,20 +1231,20 @@ def main():
         
         with tab1:
             st.markdown('<div class="client-container">', unsafe_allow_html=True)
-            st.markdown("## Branding Studio")
+            st.markdown("## 🎨 Branding Studio")
             
             col1, col2 = st.columns([2, 1])
             
             with col1:
                 preset_names = list(presets.keys())
                 selected_preset = st.selectbox(
-                    "Brand Preset Library",
+                    "📚 Brand Preset Library",
                     ["Create New"] + preset_names
                 )
             
             with col2:
                 if selected_preset != "Create New" and selected_preset in presets:
-                    st.success(f"Active: {selected_preset}")
+                    st.success(f"✅ Active: {selected_preset}")
                     branding = presets[selected_preset]
                 else:
                     branding = {
@@ -1060,18 +1259,18 @@ def main():
             
             with col1:
                 name_input = st.text_input(
-                    "Professional Identity",
+                    "👤 Professional Identity",
                     value=branding.get("name", "")
                 )
                 
                 brand_color = st.color_picker(
-                    "Signature Brand Color",
+                    "🎨 Signature Brand Color",
                     value=branding.get("brand_color", "#1E3A8A")
                 )
             
             with col2:
                 font_choice = st.selectbox(
-                    "Typography",
+                    "📝 Typography",
                     ["Helvetica", "Times-Roman", "Courier"],
                     index=["Helvetica", "Times-Roman", "Courier"].index(
                         branding.get("font_choice", "Helvetica")
@@ -1079,16 +1278,16 @@ def main():
                 )
                 
                 pdf_theme = st.radio(
-                    "Document Theme",
+                    "🌓 Document Theme",
                     ["Light", "Dark"],
                     index=0 if branding.get("pdf_theme", "Light") == "Light" else 1,
                     horizontal=True
                 )
             
-            st.markdown("### Professional Logo")
+            st.markdown("### 🖼️ Professional Logo")
             cover_logo = None
             logo_upload = st.file_uploader(
-                "Upload Your Brand Mark",
+                "📤 Upload Your Brand Mark",
                 type=["png", "jpg", "jpeg"]
             )
             
@@ -1099,16 +1298,16 @@ def main():
                 cover_logo = branding.get("logo")
                 st.image(base64.b64decode(cover_logo), width=200)
             
-            st.markdown("### Brand Preset Manager")
+            st.markdown("### 💼 Brand Preset Manager")
             preset_name_input = st.text_input(
-                "Preset Collection Name",
+                "🏷️ Preset Collection Name",
                 value=selected_preset if selected_preset != "Create New" else ""
             )
             
             col1, col2, col3 = st.columns(3)
             
             with col1:
-                if st.button("Save Branding Profile", use_container_width=True):
+                if st.button("💾 Save Branding Profile", use_container_width=True):
                     if preset_name_input.strip():
                         presets[preset_name_input] = {
                             "name": name_input,
@@ -1124,7 +1323,7 @@ def main():
                         st.error("Please enter a preset name")
             
             with col2:
-                if st.button("Delete Branding Profile", use_container_width=True):
+                if st.button("🗑️ Delete Branding Profile", use_container_width=True):
                     if selected_preset in presets:
                         del presets[selected_preset]
                         save_presets(presets)
@@ -1132,7 +1331,7 @@ def main():
                         st.rerun()
             
             with col3:
-                if st.button("Reload Preset Library", use_container_width=True):
+                if st.button("🔄 Reload Preset Library", use_container_width=True):
                     st.rerun()
             
             st.session_state.portfolio_data.update({
@@ -1147,27 +1346,27 @@ def main():
         
         with tab2:
             st.markdown('<div class="client-container">', unsafe_allow_html=True)
-            st.markdown("## Content Builder")
+            st.markdown("## ✍️ Content Builder")
             
-            st.markdown("### Project Overview")
+            st.markdown("### 📋 Project Overview")
             col1, col2 = st.columns(2)
             
             with col1:
                 project_title = st.text_input(
-                    "Portfolio Title",
+                    "📌 Portfolio Title",
                     value="Generative AI Consulting Training Program"
                 )
             
             with col2:
-                date = st.date_input("Project Date", datetime.today())
+                date = st.date_input("📅 Project Date", datetime.today())
             
             sections = [
-                ("Executive Summary", "exec_summary"),
-                ("Strategic Opportunities", "opportunities"),
-                ("Risk Assessment", "risks"),
-                ("Scenario Analysis", "scenarios"),
-                ("Professional Insights", "reflection"),
-                ("Design Case Study", "logo_text")
+                ("📊 Executive Summary", "exec_summary"),
+                ("🚀 Strategic Opportunities", "opportunities"),
+                ("⚠️ Risk Assessment", "risks"),
+                ("🎯 Scenario Analysis", "scenarios"),
+                ("💡 Professional Insights", "reflection"),
+                ("🎨 Design Case Study", "logo_text")
             ]
             
             content_data = {}
@@ -1200,7 +1399,7 @@ def main():
                 
                 with col2:
                     content_data[f"{key}_images"] = st.file_uploader(
-                        f"Images for {title}",
+                        f"🖼️ Images for {title.split(' ', 1)[1]}",
                         type=["png", "jpg", "jpeg"],
                         accept_multiple_files=True,
                         key=f"{key}_images",
@@ -1208,7 +1407,7 @@ def main():
                     )
                     
                     if content_data[f"{key}_images"]:
-                        st.success(f"{len(content_data[f'{key}_images'])} image(s)")
+                        st.success(f"✅ {len(content_data[f'{key}_images'])} image(s)")
             
             st.session_state.portfolio_data.update(content_data)
             st.session_state.portfolio_data.update({
@@ -1220,7 +1419,7 @@ def main():
         
         with tab3:
             st.markdown('<div class="client-container">', unsafe_allow_html=True)
-            st.markdown("## Live Preview")
+            st.markdown("## 👀 Live Preview")
             
             data = st.session_state.portfolio_data
             
@@ -1272,23 +1471,23 @@ def main():
         
         with tab4:
             st.markdown('<div class="client-container">', unsafe_allow_html=True)
-            st.markdown("## PDF Export Studio")
+            st.markdown("## 📑 PDF Export Studio")
             
             col1, col2 = st.columns(2)
             
             with col1:
                 export_theme = st.radio(
-                    "Export Theme",
+                    "🌓 Export Theme",
                     ["Light", "Dark"],
                     horizontal=True
                 )
             
             with col2:
-                st.info("**Pro Tips:**\n\n• Use high-res images\n• Keep content concise\n• Preview before export")
+                st.info("**💡 Pro Tips:**\n\n• Use high-res images\n• Keep content concise\n• Preview before export")
             
-            if st.button("Generate Professional Portfolio", use_container_width=True):
+            if st.button("📊 Generate Professional Portfolio", use_container_width=True):
                 try:
-                    with st.spinner("Creating your portfolio..."):
+                    with st.spinner("🔄 Creating your portfolio..."):
                         output_file = "admin_portfolio.pdf"
                         
                         pdf_data = st.session_state.portfolio_data.copy()
@@ -1298,9 +1497,9 @@ def main():
                             with open(output_file, "rb") as f:
                                 pdf_bytes = f.read()
                             
-                            st.success("Portfolio generated successfully")
+                            st.success("✅ Portfolio generated successfully")
                             st.download_button(
-                                "Download Your Portfolio",
+                                "⬇️ Download Your Portfolio",
                                 pdf_bytes,
                                 file_name=f"Admin_Portfolio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                                 mime="application/pdf",
@@ -1315,89 +1514,89 @@ def main():
             st.markdown('</div>', unsafe_allow_html=True)
     
     elif st.session_state.user_role == "client":
-        st.sidebar.markdown("### Client Portal")
-        st.sidebar.info("Your portfolio uses **PyStatR+ branding** automatically")
+        st.sidebar.markdown("### 👤 Client Portal")
+        st.sidebar.info("✅ Your portfolio uses **PyStatR+ branding** automatically")
         
         st.markdown("""
         <div class="main-header">
-            <h1 class="main-title">Client Portfolio Portal</h1>
-            <p class="subtitle">Build a future-ready consulting portfolio with PyStatR+ branding and AI-driven design</p>
+            <h1 class="main-title">👤 Client Portfolio Portal</h1>
+            <p class="subtitle">🎯 Build a future-ready consulting portfolio with PyStatR+ branding and AI-driven design</p>
         </div>
         """, unsafe_allow_html=True)
         
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### PyStatR+ Branding (Locked)")
+        st.markdown("### 🔒 PyStatR+ Branding (Locked)")
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.markdown("**Brand Color:** Deep Blue (#1E3A8A)")
+            st.markdown("**🎨 Brand Color:** Deep Blue (#1E3A8A)")
             st.markdown('<div style="width: 100%; height: 30px; background: #1E3A8A; border-radius: 5px;"></div>', unsafe_allow_html=True)
         
         with col2:
-            st.markdown("**Accent Color:** Bright Yellow (#FFD700)")
+            st.markdown("**⭐ Accent Color:** Bright Yellow (#FFD700)")
             st.markdown('<div style="width: 100%; height: 30px; background: #FFD700; border-radius: 5px;"></div>', unsafe_allow_html=True)
         
         with col3:
-            st.markdown("**Typography:** Helvetica")
+            st.markdown("**📝 Typography:** Helvetica")
             st.markdown('<div style="font-family: Helvetica; font-weight: 600; color: #1E3A8A;">Sample Text</div>', unsafe_allow_html=True)
         
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### Project Information")
+        st.markdown("### 📋 Project Information")
         
         col1, col2 = st.columns(2)
         with col1:
-            project_title = st.text_input("Project Title", "Consulting Engagement")
+            project_title = st.text_input("📌 Project Title", "Consulting Engagement")
         with col2:
-            date = st.date_input("Date")
+            date = st.date_input("📅 Date")
         
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### Portfolio Content")
+        st.markdown("### 📝 Portfolio Content")
         
-        exec_summary = st.text_area("Executive Summary", height=150)
+        exec_summary = st.text_area("📊 Executive Summary", height=150)
         
         col1, col2 = st.columns(2)
         with col1:
-            opportunities = st.text_area("Strategic Opportunities", height=120)
+            opportunities = st.text_area("🚀 Strategic Opportunities", height=120)
         with col2:
-            risks = st.text_area("Risk Assessment", height=120)
+            risks = st.text_area("⚠️ Risk Assessment", height=120)
         
-        scenarios = st.text_area("Scenario Analysis", 
+        scenarios = st.text_area("🎯 Scenario Analysis", 
                                 value="Primary Strategy | High Investment | 35% ROI | Moderate Risk | Recommended\nAlternative Approach | Medium Investment | 20% ROI | Lower Risk | Consider",
                                 height=100)
         
-        reflection = st.text_area("Professional Insights", height=150)
-        logo_text = st.text_area("Design Case Study", height=150)
+        reflection = st.text_area("💡 Professional Insights", height=150)
+        logo_text = st.text_area("🎨 Design Case Study", height=150)
         
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### Visual Assets (Optional)")
+        st.markdown("### 🖼️ Visual Assets (Optional)")
         
         col1, col2 = st.columns(2)
         with col1:
-            exec_images = st.file_uploader("Executive Summary Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
-            or_images = st.file_uploader("Opportunities & Risks Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
-            scen_images = st.file_uploader("Scenario Analysis Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
+            exec_images = st.file_uploader("📊 Executive Summary Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
+            or_images = st.file_uploader("🚀 Opportunities & Risks Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
+            scen_images = st.file_uploader("🎯 Scenario Analysis Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
         
         with col2:
-            reflection_images = st.file_uploader("Professional Insights Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
-            logo_images = st.file_uploader("Design Case Study Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
+            reflection_images = st.file_uploader("💡 Professional Insights Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
+            logo_images = st.file_uploader("🎨 Design Case Study Images", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
         
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('<div class="client-container">', unsafe_allow_html=True)
-        st.markdown("### Preview & Export")
+        st.markdown("### 📤 Preview & Export")
         
         client_pdf_theme = admin_settings.get("client_pdf_theme", "Light")
-        st.info(f"Your portfolio will automatically use **PyStatR+ branding** with **{client_pdf_theme} theme**")
+        st.info(f"✅ Your portfolio will automatically use **PyStatR+ branding** with **{client_pdf_theme} theme**")
         
-        if st.button("Generate Portfolio PDF", use_container_width=True):
+        if st.button("📄 Generate Portfolio PDF", use_container_width=True):
             try:
-                with st.spinner("Creating your professional portfolio..."):
+                with st.spinner("🔄 Creating your professional portfolio..."):
                     output_file = "client_portfolio.pdf"
                     
                     client_data = {
@@ -1426,15 +1625,14 @@ def main():
                         with open(output_file, "rb") as f:
                             pdf_bytes = f.read()
                         
-                        st.success("Portfolio generated successfully")
+                        st.success("✅ Portfolio generated successfully")
                         st.download_button(
-                            "Download Your Portfolio",
+                            "⬇️ Download Your Portfolio",
                             pdf_bytes,
                             file_name=f"Client_Portfolio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                             mime="application/pdf",
                             use_container_width=True
                         )
-                        
                         os.remove(output_file)
                     
             except Exception as e:
@@ -1447,6 +1645,7 @@ def main():
     <div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">
         <p><strong>AI Consulting Portfolio Builder</strong> — Elevating expertise into professional impact</p>
         <p>Powered by <strong>PyStatRPlus</strong> | Future-ready design meets advanced intelligence</p>
+        <p style="margin-top:1rem; color: #FFD700; text-shadow: 0 0 8px rgba(255,215,0,0.6); font-style: italic;">Built with ❤️ by <strong>PyStatR+</strong>!</p>
     </div>
     """, unsafe_allow_html=True)
 
